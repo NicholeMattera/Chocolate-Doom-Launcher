@@ -20,13 +20,40 @@
 #include <stdlib.h> 
 
 #include "ListRow.hpp"
+#include "../Application.hpp"
+#include "../Managers/Font.hpp"
+#include "../Managers/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Views {
     ListRow::ListRow(std::string identifier) {
+        auto tm = Managers::Theme::Instance();
+        auto fm = Managers::Font::Instance();
+
         _identifier = identifier;
+
+        _titleText = new Text(fm->getFont(StandardFont, 23), "", tm->text);
+        _titleText->frame = { 20, 23, 840, 24 };
+        addSubView(_titleText);
+    }
+
+    void ListRow::onRender(SDL_Rect rect, double dTime) {
+        auto tm = Managers::Theme::Instance();
+
+        if (index != 0) {
+            // Divider
+            auto divider = tm->list_divider;
+            SDL_SetRenderDrawColor(Application::renderer, divider.r, divider.g, divider.b, divider.a);
+            SDL_RenderDrawLine(Application::renderer, rect.x + 5, 0, rect.x + rect.w - 10, 0);
+        }
+
+        Control::onRender(rect, dTime);
     }
 
     std::string ListRow::getIdentifier() {
         return _identifier;
+    }
+
+    void ListRow::setTitle(std::string text) {
+        _titleText->setText(text);
     }
 }

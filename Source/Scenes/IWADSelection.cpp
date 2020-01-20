@@ -130,6 +130,9 @@ namespace ChocolateDoomLauncher::Scenes {
             row = new Views::ListRow("WadRow");
         }
 
+        // Improve this to identify the IWAD.
+        row->setTitle(_wads.at(index));
+
         return row;
     }
 }

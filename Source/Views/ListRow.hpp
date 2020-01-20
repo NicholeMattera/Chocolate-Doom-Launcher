@@ -20,6 +20,7 @@
 #include <string>
 
 #include "Control.hpp"
+#include "Text.hpp"
 
 #pragma once
 
@@ -27,11 +28,15 @@ namespace ChocolateDoomLauncher::Views {
     class ListRow : public Control {
         public:
             ListRow(std::string identifier);
+            void onRender(SDL_Rect rect, double dTime);
             std::string getIdentifier();
+            void setTitle(std::string text);
 
             int index;
         private:
             std::string _identifier;
+
+            Text * _titleText = NULL;
 
     };
 }

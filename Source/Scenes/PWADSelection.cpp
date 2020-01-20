@@ -122,6 +122,8 @@ namespace ChocolateDoomLauncher::Scenes {
             row = new Views::ListRow("WadRow");
         }
 
+        row->setTitle(_wads.at(index));
+
         return row;
     }
 }

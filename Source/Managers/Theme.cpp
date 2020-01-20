@@ -32,7 +32,6 @@ namespace ChocolateDoomLauncher::Managers {
         background = { 0, 0, 0, 255 };
         header_footer_divider = { 255, 255, 255, 255 };
         list_divider = { 77, 77, 77, 255 };
-        selected_background = { 31, 34, 39, 255 };
         selected_border_1 = { 255, 0, 0, 255 };
         selected_border_2 = { 67, 0, 0, 255 };
         text = { 255, 255, 255, 255 };

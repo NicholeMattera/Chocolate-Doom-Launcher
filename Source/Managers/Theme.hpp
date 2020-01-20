@@ -29,7 +29,6 @@ namespace ChocolateDoomLauncher::Managers {
             SDL_Color background;
             SDL_Color header_footer_divider;
             SDL_Color list_divider;
-            SDL_Color selected_background;
             SDL_Color selected_border_1;
             SDL_Color selected_border_2;
             SDL_Color text;

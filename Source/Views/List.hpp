@@ -48,6 +48,7 @@ namespace ChocolateDoomLauncher::Views {
         private:
             ListDelegate * _delegate = NULL;
             int _numberOfRows = 0;
+            int _maximumNumberOfRows = 0;
             int _rowSelected = 0;
             std::map<std::string, std::vector<ListRow *>> _rowCache;
         

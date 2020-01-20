@@ -38,7 +38,36 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     ListRow * List::getReusableRow(std::string identifier) {
-        return NULL;
+        auto rowCache = _rowCache.find(identifier);
+        if (rowCache == _rowCache.end()) {
+            return NULL;
+        }
+
+        // We haven't hit the maximum number of rows yet.
+        if ((int) rowCache->second.size() < _maximumNumberOfRows) {
+            return NULL;
+        }
+
+        ListRow * farthestRow = NULL;
+        int farthestOffscreenDistance = 0;
+        for (auto const& row : rowCache->second) {
+            int distance = -1;
+
+            // Is it offscreen and figure out it's distance offscreen.
+            if (row->frame.y + row->frame.h < 0) {
+                distance = (row->frame.y + row->frame.h) * -1;
+            } else if (row->frame.y > frame.h) {
+                distance = row->frame.y - frame.h;
+            }
+
+            // Lets check if this distance is the farthest.
+            if (distance > farthestOffscreenDistance) {
+                farthestOffscreenDistance = distance;
+                farthestRow = row;
+            }
+        }
+
+        return farthestRow;
     }
 
     void List::reload() {
@@ -58,15 +87,15 @@ namespace ChocolateDoomLauncher::Views {
         _rowCache.clear();
 
         auto rowHeight = _delegate->getRowHeight();
-        int maximumNumberOfRows = ceil(frame.h / rowHeight) + 4;
+        _maximumNumberOfRows = ceil(frame.h / rowHeight) + 4;
 
         int y = 50;
         // Generate our rows.
-        for (int i = 0; i < _numberOfRows && i < maximumNumberOfRows; i++) {
+        for (int i = 0; i < _numberOfRows && i < _maximumNumberOfRows; i++) {
             auto row = _delegate->getRow(this, i);
             row->index = i;
             row->frame = { 200, y, 880, rowHeight };
-            row->hasFocus = hasFocus && i == _rowSelected;
+            row->hasFocus = (hasFocus && i == _rowSelected);
             addSubView(row);
 
             auto rowCache = _rowCache.find(row->getIdentifier());
@@ -87,11 +116,13 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     void List::selectRow(int index) {
+        // TODO: Handle scrolling.
+
         _rowSelected = index;
         for (auto it = _rowCache.begin(); it != _rowCache.end(); ++it) {
             auto rows = it->second;
             for (auto const& row : rows) {
-                row->hasFocus = (row->index == _rowSelected);
+                row->hasFocus = (hasFocus && row->index == _rowSelected);
             }
         }
     }
