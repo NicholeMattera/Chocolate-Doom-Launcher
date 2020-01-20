@@ -37,8 +37,8 @@ namespace ChocolateDoomLauncher::Managers {
         active_player_indicator = { 158, 228, 0, 255 };
         player_indicator = { 125, 125, 125, 255 };
         selected_background = { 31, 34, 39, 255 };
-        selected_border_1 = { 89, 0, 0, 255 };
-        selected_border_2 = { 64, 34, 34, 255 };
+        selected_border_1 = { 255, 0, 0, 255 };
+        selected_border_2 = { 67, 0, 0, 255 };
         modal_faded_background = { 18, 27, 36, 229 };
         modal_background = { 70, 70, 70, 255 };
         text = { 255, 255, 255, 255 };
