@@ -86,8 +86,6 @@ namespace ChocolateDoomLauncher::Services {
             return "DOOM 2: Plutonia Experiment";
         } else if (filename.compare("TNT.WAD") == 0) {
             return "DOOM 2: TNT - Evilution";
-        } else if (filename.compare("CHEX.WAD") == 0) {
-            return "Chex Quest";
         } else if (filename.compare("FREEDM.WAD") == 0) {
             return "FreeDM";
         } else if (filename.compare("FREEDOOM1.WAD") == 0) {
@@ -144,8 +142,15 @@ namespace ChocolateDoomLauncher::Services {
         
         if (!pwad.empty()) {
             args += " -file " + pwad;
+
+            int extensionLocation = pwad.find_last_of(".");
+            std::string deh = pwad.substr(0, extensionLocation) + ".deh";
+            if (File::fileExists(currentWorkingDirectory + "/wads/" + deh)) {
+                args += " -deh " + deh;
+            }
         }
 
+        printf("%s\n", args.c_str());
         if (R_FAILED(envSetNextLoad(path.c_str(), args.c_str()))) {
             return false;
         }
