@@ -30,19 +30,12 @@ namespace ChocolateDoomLauncher::Managers {
 
     Theme::Theme() {
         background = { 0, 0, 0, 255 };
-        sidebard_background = { 51, 51, 51, 255 };
         header_footer_divider = { 255, 255, 255, 255 };
-        header_bullet = { 160, 160, 160, 255 };
         list_divider = { 77, 77, 77, 255 };
-        active_player_indicator = { 158, 228, 0, 255 };
-        player_indicator = { 125, 125, 125, 255 };
         selected_background = { 31, 34, 39, 255 };
         selected_border_1 = { 255, 0, 0, 255 };
         selected_border_2 = { 67, 0, 0, 255 };
-        modal_faded_background = { 18, 27, 36, 229 };
-        modal_background = { 70, 70, 70, 255 };
         text = { 255, 255, 255, 255 };
         active_text = { 0, 255, 196, 255 };
-        disabled_text = { 125, 125, 125, 255 };
     }
 }

@@ -26,22 +26,14 @@
 namespace ChocolateDoomLauncher::Managers {
     class Theme {
         public:
-            ColorSetId colorSet;
             SDL_Color background;
-            SDL_Color sidebard_background;
             SDL_Color header_footer_divider;
-            SDL_Color header_bullet;
             SDL_Color list_divider;
-            SDL_Color active_player_indicator;
-            SDL_Color player_indicator;
             SDL_Color selected_background;
             SDL_Color selected_border_1;
             SDL_Color selected_border_2;
-            SDL_Color modal_faded_background;
-            SDL_Color modal_background;
             SDL_Color text;
             SDL_Color active_text;
-            SDL_Color disabled_text;
 
             static Theme * Instance();
         
