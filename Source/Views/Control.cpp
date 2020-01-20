@@ -70,32 +70,34 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     void Control::onRender(SDL_Rect rect, double dTime) {
-        // Top
-        thickLineRGBA(
-                Application::renderer,
-                rect.x, rect.y + 3, rect.x + rect.w, rect.y + 3,
-                5,
-                _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
+        if (hasFocus) {
+            // Top
+            thickLineRGBA(
+                    Application::renderer,
+                    rect.x, rect.y + 2, rect.x + rect.w, rect.y + 2,
+                    4,
+                    _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
 
-        // Right
-        thickLineRGBA(
-                Application::renderer,
-                rect.x + rect.w - 2, rect.y + 3, rect.x + rect.w - 2, rect.y + rect.h - 3,
-                5,
-                _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
+            // Right
+            thickLineRGBA(
+                    Application::renderer,
+                    rect.x + rect.w - 2, rect.y + 2, rect.x + rect.w - 2, rect.y + rect.h - 2,
+                    4,
+                    _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
 
-        // Bottom
-        thickLineRGBA(
-                Application::renderer,
-                rect.x + rect.w, rect.y + rect.h - 3, rect.x, rect.y + rect.h - 3,
-                5,
-                _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
+            // Bottom
+            thickLineRGBA(
+                    Application::renderer,
+                    rect.x + rect.w, rect.y + rect.h - 2, rect.x, rect.y + rect.h - 2,
+                    4,
+                    _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
 
-        // Left
-        thickLineRGBA(
-                Application::renderer,
-                rect.x + 2, rect.y + rect.h - 3, rect.x + 2, rect.y + 3,
-                5,
-                _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
+            // Left
+            thickLineRGBA(
+                    Application::renderer,
+                    rect.x + 2, rect.y + rect.h - 2, rect.x + 2, rect.y + 2,
+                    4,
+                    _borderColor.r, _borderColor.g, _borderColor.b, _borderColor.a);
+        }
     }
 }
