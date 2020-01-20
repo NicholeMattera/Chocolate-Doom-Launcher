@@ -27,7 +27,7 @@
 #pragma once
 
 namespace ChocolateDoomLauncher::Views {
-    class Header : public ChocolateDoomLauncher::View {
+    class Header : public View {
         public:
             Header(std::string title, bool showIcon);
             ~Header();

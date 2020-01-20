@@ -25,7 +25,7 @@
 #pragma once
 
 namespace ChocolateDoomLauncher::Views {
-    class Image : public ChocolateDoomLauncher::View {
+    class Image : public View {
         public:
             Image(SDL_Texture * image, ImageMode mode = CENTERED);
             void onRender(SDL_Rect rect, double dTime);

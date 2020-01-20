@@ -24,7 +24,7 @@
 #pragma once
 
 namespace ChocolateDoomLauncher::Views {
-    class Control : public ChocolateDoomLauncher::View {
+    class Control : public View {
         public:
             Control();
 

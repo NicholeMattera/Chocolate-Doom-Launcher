@@ -29,7 +29,7 @@
 #pragma once
 
 namespace ChocolateDoomLauncher::Views {
-    class Text : public ChocolateDoomLauncher::View {
+    class Text : public View {
         public:
             TTF_Font * font;
             int lineHeight;

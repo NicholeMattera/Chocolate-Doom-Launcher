@@ -28,7 +28,7 @@
 #pragma once
 
 namespace ChocolateDoomLauncher::Scenes {
-    class Error : public ChocolateDoomLauncher::Scene {
+    class Error : public Scene {
         public:
             Error(std::string errorMessage);
             ~Error();

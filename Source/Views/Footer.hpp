@@ -25,7 +25,7 @@
 #pragma once
 
 namespace ChocolateDoomLauncher::Views {
-    class Footer : public ChocolateDoomLauncher::View {
+    class Footer : public View {
         public:
             std::list<Models::FooterAction *> actions;
 
