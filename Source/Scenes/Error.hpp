@@ -17,22 +17,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <string>
-#include <vector>
+#include <SDL2/SDL.h>
+
+#include "../Scene.hpp"
+#include "../Views/Footer.hpp"
+#include "../Views/Header.hpp"
+#include "../Views/Image.hpp"
+#include "../Views/Text.hpp"
 
 #pragma once
 
-namespace ChocolateDoomLauncher::Services {
-    class File {
+namespace ChocolateDoomLauncher::Scenes {
+    class Error : public ChocolateDoomLauncher::Scene {
         public:
-            static std::string currentWorkingDirectory();
-            static bool directoryExists(std::string path);
-            static bool createDirectories(std::string path);
+            Error(std::string errorMessage);
+            ~Error();
 
-            static bool fileExists(std::string path);
-            static std::vector<std::string> filenamesInDirectory(std::string path);
+            void buttonsDown(u32 buttons, double dTime);
 
         private:
+            SDL_Texture * _backgroundTexture = NULL;
 
+            Views::Image * _background = NULL;
+            Views::Header * _header = NULL;
+            Views::Text * _error = NULL;
+            Views::Footer * _footer = NULL;
+        
     };
 }

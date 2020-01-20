@@ -73,6 +73,11 @@ namespace ChocolateDoomLauncher::Services {
         return bSuccess;
     }
 
+    bool File::fileExists(std::string path) {
+        struct stat buffer;
+        return (stat(path.c_str(), &buffer) == 0);
+    }
+
     std::vector<std::string> File::filenamesInDirectory(std::string path) {
         std::vector<std::string> files;
 

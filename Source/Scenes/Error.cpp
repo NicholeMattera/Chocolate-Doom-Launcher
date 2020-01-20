@@ -16,21 +16,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
- 
-#include <limits.h>
-#include <SDL2/SDL_image.h>
 
+#include <SDL2/SDL_image.h>
+ 
 #include "Error.hpp"
-#include "IWADSelection.hpp"
-#include "PWADSelection.hpp"
 #include "../Application.hpp"
-#include "../Models/FooterAction.hpp"
+#include "../Managers/Font.hpp"
 #include "../Managers/Theme.hpp"
-#include "../Services/Doom.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
-    IWADSelection::IWADSelection() {
+    Error::Error(std::string errorMessage) {
         auto tm = Managers::Theme::Instance();
+        auto fm = Managers::Font::Instance();
 
         background = tm->background;
 
@@ -42,23 +39,18 @@ namespace ChocolateDoomLauncher::Scenes {
         _background->frame = { 0, 0, 1280, 720 };
         addSubView(_background);
 
-        _header = new Views::Header("Choose a IWAD", true);
+        _header = new Views::Header("Chocolate Doom Launcher", true);
         _header->frame = { 0, 0, 1280, 88 };
         addSubView(_header);
+
+        _error = new Views::Text(fm->getFont(StandardFont, 23), errorMessage, tm->text);
+        _error->frame = { 0, 320, 1280, 70 };
+        _error->textAlignment = CENTER_ALIGN;
+        addSubView(_error);
 
         _footer = new Views::Footer();
         _footer->frame = { 0, 647, 1280, 73 };
         addSubView(_footer);
-
-        auto openIWADAction = new Models::FooterAction();
-        openIWADAction->button = A_BUTTON;
-        openIWADAction->text = "Open IWAD";
-        _footer->addAction(openIWADAction);
-
-        auto openPWADAction = new Models::FooterAction();
-        openPWADAction->button = X_BUTTON;
-        openPWADAction->text = "Open IWAD with PWAD";
-        _footer->addAction(openPWADAction);
 
         auto quitAction = new Models::FooterAction();
         quitAction->button = B_BUTTON;
@@ -66,7 +58,7 @@ namespace ChocolateDoomLauncher::Scenes {
         _footer->addAction(quitAction);
     }
 
-    IWADSelection::~IWADSelection() {
+    Error::~Error() {
         if (_backgroundTexture != NULL)
             SDL_DestroyTexture(_backgroundTexture);
 
@@ -80,16 +72,8 @@ namespace ChocolateDoomLauncher::Scenes {
             delete _footer;
     }
 
-    void IWADSelection::buttonsDown(u32 buttons, double dTime) {
-        if (buttons & KEY_A) {
-            if (!Services::Doom::loadDoom("DOOM2.WAD")) {
-                Application::switchScene(new Error("Unable to start Chocolate Doom."));
-            }
-        }
-        else if (buttons & KEY_X) {
-            Application::switchScene(new PWADSelection());
-        }
-        else if (buttons & KEY_B) {
+    void Error::buttonsDown(u32 buttons, double dTime) {
+        if (buttons & KEY_B) {
             Application::switchScene(NULL);
         }
     }

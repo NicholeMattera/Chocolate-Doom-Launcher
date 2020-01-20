@@ -19,11 +19,13 @@
  
 #include <SDL2/SDL_image.h>
 
+#include "Error.hpp"
 #include "IWADSelection.hpp"
 #include "PWADSelection.hpp"
 #include "../Application.hpp"
 #include "../Models/FooterAction.hpp"
 #include "../Managers/Theme.hpp"
+#include "../Services/Doom.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
     PWADSelection::PWADSelection() {
@@ -74,7 +76,9 @@ namespace ChocolateDoomLauncher::Scenes {
 
     void PWADSelection::buttonsDown(u32 buttons, double dTime) {
         if (buttons & KEY_A) {
-            
+            if (!Services::Doom::loadDoom("DOOM2.WAD")) {
+                Application::switchScene(new Error("Unable to start Chocolate Doom."));
+            }
         }
         else if (buttons & KEY_B) {
             Application::switchScene(new IWADSelection());

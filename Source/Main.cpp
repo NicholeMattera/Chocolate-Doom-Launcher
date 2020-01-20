@@ -18,6 +18,7 @@
  */
 
 #include "Application.hpp"
+#include "Scenes/Error.hpp"
 #include "Scenes/IWADSelection.hpp"
 #include "Services/File.hpp"
 
@@ -33,8 +34,16 @@ int main() {
         ChocolateDoomLauncher::Services::File::createDirectories("./pwads");
     }
 
+    // Check if Chocolate Doom exists.
+    auto exists = ChocolateDoomLauncher::Services::File::fileExists("./doom.nro");
+
     // Start our first scene.
-    auto val = app->start(new ChocolateDoomLauncher::Scenes::IWADSelection());
+    int val;
+    if (exists) {
+        val = app->start(new ChocolateDoomLauncher::Scenes::IWADSelection());
+    } else {
+        val = app->start(new ChocolateDoomLauncher::Scenes::Error("Chocolate Doom is missing, please download Chocolate Doom and install it into:\n \n" + ChocolateDoomLauncher::Services::File::currentWorkingDirectory()));
+    }
 
     // Clean up.
     delete app;
