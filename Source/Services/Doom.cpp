@@ -69,7 +69,7 @@ namespace ChocolateDoomLauncher::Services {
         auto currentWorkingDirectory = File::currentWorkingDirectory();
 
         auto path = currentWorkingDirectory + "/doom.nro";
-        auto args = "-nogui -waddir " + currentWorkingDirectory + "/iwads -iwad " + iwad;
+        auto args = "-nogui -waddir " + currentWorkingDirectory + "/wads -iwad " + iwad;
         
         if (!pwad.empty()) {
             args += " -file " + pwad;
