@@ -19,6 +19,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "../Constants.hpp"
 #include "../View.hpp"
 
 #pragma once
@@ -26,13 +27,17 @@
 namespace ChocolateDoomLauncher::Views {
     class Image : public ChocolateDoomLauncher::View {
         public:
-            Image(SDL_Texture * image);
+            Image(SDL_Texture * image, ImageMode mode = CENTERED);
+            void onRender(SDL_Rect rect, double dTime);
 
             void setImage(SDL_Texture * image);
-            void onRender(SDL_Rect rect, double dTime);
+            void setMode(ImageMode mode);
 
         private:
             SDL_Texture * _image;
+            int _width;
+            int _height;
+            ImageMode _mode;
         
     };
 }

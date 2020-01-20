@@ -22,6 +22,7 @@
 #include "../Scene.hpp"
 #include "../Views/Footer.hpp"
 #include "../Views/Header.hpp"
+#include "../Views/Image.hpp"
 
 #pragma once
 
@@ -32,15 +33,13 @@ namespace ChocolateDoomLauncher::Scenes {
             ~PWADSelection();
 
             void buttonsDown(u32 buttons, double dTime);
-            void render(SDL_Rect rect, double dTime);
 
         private:
-            SDL_Texture * _background = NULL;
-            int _backgroundWidth = 0;
-            int _backgroundHeight = 0;
+            SDL_Texture * _backgroundTexture = NULL;
 
-            Views::Header * _headerView = NULL;
-            Views::Footer * _footerView = NULL;
+            Views::Image * _background = NULL;
+            Views::Header * _header = NULL;
+            Views::Footer * _footer = NULL;
         
     };
 }

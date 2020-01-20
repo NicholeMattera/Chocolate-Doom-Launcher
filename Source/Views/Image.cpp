@@ -21,16 +21,36 @@
 #include "../Application.hpp"
 
 namespace ChocolateDoomLauncher::Views {
-    Image::Image(SDL_Texture * image) {
+    Image::Image(SDL_Texture * image, ImageMode mode) {
         _image = image;
+        _mode = mode;
+        
+        SDL_QueryTexture(_image, NULL, NULL, &_width, &_height);
+    }
+
+    void Image::onRender(SDL_Rect rect, double dTime) {
+        if (_mode == CENTERED) {
+            SDL_Rect textureFrame = { rect.x + ((rect.w - _width) / 2), rect.y + ((rect.h - _height) / 2), _width, _height };
+            SDL_RenderCopy(Application::renderer, _image, NULL, &textureFrame);
+        }
+        else if (_mode == TILE) {
+            for (int x = rect.x; x <= (rect.w / _width + 1) * _width; x += _width) {
+                for (int y = rect.y; y <= (rect.h / _height + 1) * _height; y += _height) {
+                    SDL_Rect textureFrame = { x, y, _width, _height };
+                    SDL_RenderCopy(Application::renderer, _image, NULL, &textureFrame);
+                }
+            }
+        }
     }
 
     void Image::setImage(SDL_Texture * image) {
         _image = image;
+        SDL_QueryTexture(_image, NULL, NULL, &_width, &_height);
         requiresRendering = true;
     }
 
-    void Image::onRender(SDL_Rect rect, double dTime) {
-        SDL_RenderCopy(Application::renderer, _image, NULL, &rect);
+    void Image::setMode(ImageMode mode) {
+        _mode = mode;
+        requiresRendering = true;
     }
 }

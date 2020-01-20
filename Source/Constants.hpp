@@ -59,4 +59,9 @@ namespace ChocolateDoomLauncher {
         X_BUTTON,
         Y_BUTTON
     } FooterActionButton;
+
+    typedef enum {
+        CENTERED,
+        TILE
+    } ImageMode;
 }

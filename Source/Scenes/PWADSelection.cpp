@@ -32,39 +32,44 @@ namespace ChocolateDoomLauncher::Scenes {
         background = tm->background;
 
         auto backgroundSurface = IMG_Load("romfs:/Background.png");
-        _background = SDL_CreateTextureFromSurface(Application::renderer, backgroundSurface);
-        _backgroundWidth = backgroundSurface->w;
-        _backgroundHeight = backgroundSurface->h;
+        _backgroundTexture = SDL_CreateTextureFromSurface(Application::renderer, backgroundSurface);
         SDL_FreeSurface(backgroundSurface);
 
-        _headerView = new Views::Header("Choose a PWAD", true);
-        _headerView->frame = { 0, 0, 1280, 88 };
-        addSubView(_headerView);
+        _background = new Views::Image(_backgroundTexture, TILE);
+        _background->frame = { 0, 0, 1280, 720 };
+        addSubView(_background);
 
-        _footerView = new Views::Footer();
-        _footerView->frame = { 0, 647, 1280, 73 };
-        addSubView(_footerView);
+        _header = new Views::Header("Choose a PWAD", true);
+        _header->frame = { 0, 0, 1280, 88 };
+        addSubView(_header);
+
+        _footer = new Views::Footer();
+        _footer->frame = { 0, 647, 1280, 73 };
+        addSubView(_footer);
 
         auto openPWADAction = new Models::FooterAction();
         openPWADAction->button = A_BUTTON;
         openPWADAction->text = "Open PWAD";
-        _footerView->addAction(openPWADAction);
+        _footer->addAction(openPWADAction);
 
         auto quitAction = new Models::FooterAction();
         quitAction->button = B_BUTTON;
         quitAction->text = "Back";
-        _footerView->addAction(quitAction);
+        _footer->addAction(quitAction);
     }
 
     PWADSelection::~PWADSelection() {
-        if (_headerView != NULL)
-            delete _headerView;
+        if (_backgroundTexture != NULL)
+            SDL_DestroyTexture(_backgroundTexture);
 
         if (_background != NULL)
-            SDL_DestroyTexture(_background);
+            delete _background;
 
-        if (_footerView != NULL)
-            delete _footerView;
+        if (_header != NULL)
+            delete _header;
+
+        if (_footer != NULL)
+            delete _footer;
     }
 
     void PWADSelection::buttonsDown(u32 buttons, double dTime) {
@@ -74,16 +79,5 @@ namespace ChocolateDoomLauncher::Scenes {
         else if (buttons & KEY_B) {
             Application::switchScene(new IWADSelection());
         }
-    }
-
-    void PWADSelection::render(SDL_Rect rect, double dTime) {
-        for (int x = 0; x <= (rect.w / _backgroundWidth + 1) * _backgroundWidth; x += _backgroundWidth) {
-            for (int y = 0; y <= (rect.h / _backgroundHeight + 1) * _backgroundHeight; y += _backgroundHeight) {
-                SDL_Rect textureFrame = { x, y, _backgroundWidth, _backgroundHeight };
-                SDL_RenderCopy(Application::renderer, _background, NULL, &textureFrame);
-            }
-        }
-
-        Scene::render(rect, dTime);
     }
 }
