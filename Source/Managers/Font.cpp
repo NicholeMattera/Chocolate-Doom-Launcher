@@ -43,7 +43,7 @@ namespace ChocolateDoomLauncher::Managers {
         } else
             fontData = fontDataIt->second;
 
-        TTF_Font * font = TTF_OpenFontRW(SDL_RWFromMem(fontData.address, fontData.size), 1, size);
+        auto font = TTF_OpenFontRW(SDL_RWFromMem(fontData.address, fontData.size), 1, size);
         _fontCache.insert(std::pair<std::string, TTF_Font *>(name + "_" + std::to_string(size), font));
 
         return font;

@@ -25,10 +25,10 @@
 
 namespace ChocolateDoomLauncher::Services {
     bool Doom::loadDoom(std::string iwad, std::string pwad) {
-        std::string currentWorkingDirectory = File::currentWorkingDirectory();
+        auto currentWorkingDirectory = File::currentWorkingDirectory();
 
-        std::string path = currentWorkingDirectory + "/doom.nro";
-        std::string args = "-nogui -iwaddir " + currentWorkingDirectory + "/iwads -iwad " + iwad;
+        auto path = currentWorkingDirectory + "/doom.nro";
+        auto args = "-nogui -iwaddir " + currentWorkingDirectory + "/iwads -iwad " + iwad;
         
         if (!pwad.empty()) {
             args += "-pwaddir " + currentWorkingDirectory + "/pwads ";

@@ -92,7 +92,7 @@ namespace ChocolateDoomLauncher::Views {
         SDL_SetRenderDrawColor(Application::renderer, divider.r, divider.g, divider.b, divider.a);
         SDL_RenderDrawLine(Application::renderer, rect.x + 30, rect.y, rect.w - 30, rect.y);
 
-        int x = rect.x + rect.w - 60;
+        auto x = rect.x + rect.w - 60;
         for (auto const & action : actions) {
             x -= action->textWidth;
             SDL_Rect textFrame = { x, rect.y + 25, action->textWidth, action->textHeight };

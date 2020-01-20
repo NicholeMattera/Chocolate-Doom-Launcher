@@ -113,7 +113,7 @@ namespace ChocolateDoomLauncher {
         // Main Game Loop
         while (appletMainLoop())
         {
-            double dTime = _getDeltaTime();
+            auto dTime = _getDeltaTime();
 
             // Handle controller inputs
             hidScanInput();
@@ -135,7 +135,7 @@ namespace ChocolateDoomLauncher {
     }
 
     void Application::render() {
-        double dTime = _getDeltaTime();
+        auto dTime = _getDeltaTime();
         _render(dTime);
 
         // Present our frame.

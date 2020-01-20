@@ -37,7 +37,7 @@ namespace ChocolateDoomLauncher {
 
         for (auto const& view : subviews) {
             if (!view->isHidden) {
-                SDL_Rect subviewFrame = view->frame;
+                auto subviewFrame = view->frame;
                 view->render({ rect.x + subviewFrame.x, rect.y + subviewFrame.y, subviewFrame.w, subviewFrame.h }, dTime);
             }
         }

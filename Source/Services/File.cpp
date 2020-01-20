@@ -33,7 +33,7 @@ namespace ChocolateDoomLauncher::Services {
     }
 
     bool File::directoryExists(std::string path) {
-        DIR * dir = opendir(path.c_str());
+        auto dir = opendir(path.c_str());
         if (dir) {
             closedir(dir);
             return true;
@@ -44,8 +44,8 @@ namespace ChocolateDoomLauncher::Services {
 
     // http://stackoverflow.com/a/11366985
     bool File::createDirectories(std::string path) {
-        bool bSuccess = false;
-        int nRC = ::mkdir(path.c_str(), 0775);
+        auto bSuccess = false;
+        auto nRC = ::mkdir(path.c_str(), 0775);
         if(nRC == -1)
         {
             switch(errno)

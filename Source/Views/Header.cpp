@@ -35,11 +35,11 @@ namespace ChocolateDoomLauncher::Views {
         _showIcon = showIcon;
 
         if (showIcon) {
-            SDL_Surface * icon1Surface = IMG_Load("romfs:/Icon1.png");
+            auto icon1Surface = IMG_Load("romfs:/Icon1.png");
             _icon[0] = SDL_CreateTextureFromSurface(Application::renderer, icon1Surface);
             SDL_FreeSurface(icon1Surface);
 
-            SDL_Surface * icon2Surface = IMG_Load("romfs:/Icon2.png");
+            auto icon2Surface = IMG_Load("romfs:/Icon2.png");
             _icon[1] = SDL_CreateTextureFromSurface(Application::renderer, icon2Surface);
             SDL_FreeSurface(icon2Surface);
 
@@ -48,9 +48,7 @@ namespace ChocolateDoomLauncher::Views {
             addSubView(_iconImage);
         }
 
-        SDL_Color textColor = tm->text;
-        TTF_Font * headerFont = fm->getFont(StandardFont, 28);
-        _titleText = new Text(headerFont, title, textColor);
+        _titleText = new Text(fm->getFont(StandardFont, 28), title, tm->text);
         _titleText->frame = {
             (showIcon) ? 132 : 74,
             36,
@@ -96,7 +94,7 @@ namespace ChocolateDoomLauncher::Views {
         auto tm = Managers::Theme::Instance();
 
         // Divider
-        SDL_Color divider = tm->header_footer_divider;
+        auto divider = tm->header_footer_divider;
         SDL_SetRenderDrawColor(Application::renderer, divider.r, divider.g, divider.b, divider.a);
         SDL_RenderDrawLine(Application::renderer, 30, rect.y + rect.h - 1, rect.x + rect.w - 30, rect.y + rect.h - 1);
     }

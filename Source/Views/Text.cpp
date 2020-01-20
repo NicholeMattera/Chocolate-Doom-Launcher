@@ -40,10 +40,10 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     void Text::onRender(SDL_Rect rect, double dTime) {
-        int y = rect.y;
+        auto y = rect.y;
         for (auto const& textLine : this->_textLines) {
             int x = 0;
-            int width = std::max(textLine->width, rect.w);
+            auto width = std::max(textLine->width, rect.w);
             switch (textAlignment) {
                 case LEFT_ALIGN:
                     x = rect.x;

@@ -22,7 +22,7 @@
 #include "Services/File.hpp"
 
 int main() {
-    ChocolateDoomLauncher::Application * app = new ChocolateDoomLauncher::Application();
+    auto * app = new ChocolateDoomLauncher::Application();
 
     // Make sure our folder structure is in place.
     if (!ChocolateDoomLauncher::Services::File::directoryExists("./iwads")) {
@@ -34,7 +34,7 @@ int main() {
     }
 
     // Start our first scene.
-    int val = app->start(new ChocolateDoomLauncher::Scenes::IWADSelection());
+    auto val = app->start(new ChocolateDoomLauncher::Scenes::IWADSelection());
 
     // Clean up.
     delete app;

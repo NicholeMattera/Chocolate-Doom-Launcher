@@ -31,7 +31,7 @@ namespace ChocolateDoomLauncher::Scenes {
 
         background = tm->background;
 
-        SDL_Surface * backgroundSurface = IMG_Load("romfs:/Background.png");
+        auto backgroundSurface = IMG_Load("romfs:/Background.png");
         _background = SDL_CreateTextureFromSurface(Application::renderer, backgroundSurface);
         _backgroundWidth = backgroundSurface->w;
         _backgroundHeight = backgroundSurface->h;
