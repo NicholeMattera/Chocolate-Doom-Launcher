@@ -17,37 +17,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <SDL2/SDL.h>
+#include <map>
 #include <string>
 #include <vector>
 
-#include "../Scene.hpp"
-#include "../Views/Footer.hpp"
-#include "../Views/Header.hpp"
-#include "../Views/Image.hpp"
-#include "../Views/List.hpp"
-#include "../Views/ListRow.hpp"
+#include "ListRow.hpp"
+#include "../View.hpp"
 
 #pragma once
 
-namespace ChocolateDoomLauncher::Scenes {
-    class PWADSelection : public Scene, public Views::ListDelegate {
+namespace ChocolateDoomLauncher::Views {
+    class List;
+
+    class ListDelegate {
         public:
-            PWADSelection(std::string iwad);
-            ~PWADSelection();
-            void buttonsDown(u32 buttons, double dTime);
-            int numberOfRows(Views::List * list);
-            Views::ListRow * getRow(Views::List * list, int index);
+            virtual int numberOfRows(List * list) { return 0; };
+            virtual int getRowHeight() { return 70; };
+            virtual ListRow * getRow(Views::List * list, int index) { return NULL; };
+    };
+
+    class List : public View {
+        public:
+            List(ListDelegate * delegate);
+            ~List();
+            ListRow * getReusableRow(std::string identifier);
+            void reload();
+            int getSelectedRowIndex();
+            void selectRow(int index);
 
         private:
-            SDL_Texture * _backgroundTexture = NULL;
-            std::string _iwad;
-            std::vector<std::string> _wads;
-
-            Views::Image * _background = NULL;
-            Views::Header * _header = NULL;
-            Views::List * _list = NULL;
-            Views::Footer * _footer = NULL;
+            ListDelegate * _delegate = NULL;
+            int _numberOfRows = 0;
+            int _rowSelected = 0;
+            std::map<std::string, std::vector<ListRow *>> _rowCache;
         
     };
 }

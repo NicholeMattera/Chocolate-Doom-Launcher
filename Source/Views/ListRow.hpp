@@ -17,36 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <SDL2/SDL.h>
 #include <string>
-#include <vector>
 
-#include "../Scene.hpp"
-#include "../Views/Footer.hpp"
-#include "../Views/Header.hpp"
-#include "../Views/Image.hpp"
-#include "../Views/List.hpp"
-#include "../Views/ListRow.hpp"
+#include "Control.hpp"
 
 #pragma once
 
-namespace ChocolateDoomLauncher::Scenes {
-    class IWADSelection : public Scene, public Views::ListDelegate {
+namespace ChocolateDoomLauncher::Views {
+    class ListRow : public Control {
         public:
-            IWADSelection();
-            ~IWADSelection();
-            void buttonsDown(u32 buttons, double dTime);
-            int numberOfRows(Views::List * list);
-            Views::ListRow * getRow(Views::List * list, int index);
+            ListRow(std::string identifier);
+            std::string getIdentifier();
 
+            int index;
         private:
-            SDL_Texture * _backgroundTexture = NULL;
-            std::vector<std::string> _wads;
+            std::string _identifier;
 
-            Views::Image * _background = NULL;
-            Views::Header * _header = NULL;
-            Views::List * _list = NULL;
-            Views::Footer * _footer = NULL;
-        
     };
 }

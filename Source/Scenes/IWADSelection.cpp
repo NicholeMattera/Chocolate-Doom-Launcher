@@ -49,6 +49,12 @@ namespace ChocolateDoomLauncher::Scenes {
         _header->frame = { 0, 0, 1280, 88 };
         addSubView(_header);
 
+        _list = new Views::List(this);
+        _list->frame = { 0, 88, 1280, 559 };
+        _list->hasFocus = true;
+        _list->reload();
+        addSubView(_list);
+
         _footer = new Views::Footer();
         _footer->frame = { 0, 647, 1280, 73 };
         addSubView(_footer);
@@ -79,21 +85,51 @@ namespace ChocolateDoomLauncher::Scenes {
         if (_header != NULL)
             delete _header;
 
+        if (_list != NULL)
+            delete _list;
+
         if (_footer != NULL)
             delete _footer;
     }
 
     void IWADSelection::buttonsDown(u32 buttons, double dTime) {
-        if (buttons & KEY_A) {
-            if (!Services::Doom::loadDoom(_wads.at(0))) {
+        if (buttons & KEY_UP) {
+            int rowSelected = _list->getSelectedRowIndex();
+            if (rowSelected != 0) {
+                _list->selectRow(rowSelected - 1);
+            }
+        }
+        else if (buttons & KEY_DOWN) {
+            int rowSelected = _list->getSelectedRowIndex();
+            if (rowSelected != (int) _wads.size() - 1) {
+                _list->selectRow(rowSelected + 1);
+            }
+        }
+        else if (buttons & KEY_A) {
+            if (!Services::Doom::loadDoom(_wads.at(_list->getSelectedRowIndex()))) {
                 Application::switchScene(new Error("Unable to start Chocolate Doom."));
             }
         }
         else if (buttons & KEY_X) {
-            Application::switchScene(new PWADSelection(_wads.at(0)));
+            Application::switchScene(new PWADSelection(_wads.at(_list->getSelectedRowIndex())));
         }
         else if (buttons & KEY_B) {
             Application::switchScene(NULL);
         }
+    }
+
+    // Views::ListDelegate Methods
+
+    int IWADSelection::numberOfRows(Views::List * list) {
+        return _wads.size();
+    }
+
+    Views::ListRow * IWADSelection::getRow(Views::List * list, int index) {
+        auto row = list->getReusableRow("WadRow");
+        if (row == NULL) {
+            row = new Views::ListRow("WadRow");
+        }
+
+        return row;
     }
 }
