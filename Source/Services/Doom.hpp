@@ -29,6 +29,9 @@ namespace ChocolateDoomLauncher::Services {
         public:
             static std::vector<std::string> getWADSInDir(std::string path, WADType type);
             static WADType getWADType(std::string path);
+            static std::string identifyIWAD(std::string path, std::string filename);
+            static std::vector<std::string> getWADDirectory(std::string path);
+
             static bool loadDoom(std::string iwad, std::string pwad = "");
 
         private:
