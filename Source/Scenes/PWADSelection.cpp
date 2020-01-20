@@ -23,15 +23,19 @@
 #include "IWADSelection.hpp"
 #include "PWADSelection.hpp"
 #include "../Application.hpp"
+#include "../Constants.hpp"
 #include "../Models/FooterAction.hpp"
 #include "../Managers/Theme.hpp"
 #include "../Services/Doom.hpp"
+#include "../Services/File.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
-    PWADSelection::PWADSelection() {
+    PWADSelection::PWADSelection(std::string iwad) {
         auto tm = Managers::Theme::Instance();
 
         background = tm->background;
+        _iwad = iwad;
+        _wads = Services::Doom::getWADSInDir(Services::File::currentWorkingDirectory() + "/wads", PWAD);
 
         auto backgroundSurface = IMG_Load("romfs:/Background.png");
         _backgroundTexture = SDL_CreateTextureFromSurface(Application::renderer, backgroundSurface);
@@ -76,7 +80,7 @@ namespace ChocolateDoomLauncher::Scenes {
 
     void PWADSelection::buttonsDown(u32 buttons, double dTime) {
         if (buttons & KEY_A) {
-            if (!Services::Doom::loadDoom("DOOM2.WAD")) {
+            if (!Services::Doom::loadDoom(_iwad, _wads.at(0))) {
                 Application::switchScene(new Error("Unable to start Chocolate Doom."));
             }
         }

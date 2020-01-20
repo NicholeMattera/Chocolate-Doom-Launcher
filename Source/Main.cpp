@@ -26,12 +26,8 @@ int main() {
     auto * app = new ChocolateDoomLauncher::Application();
 
     // Make sure our folder structure is in place.
-    if (!ChocolateDoomLauncher::Services::File::directoryExists("./iwads")) {
-        ChocolateDoomLauncher::Services::File::createDirectories("./iwads");
-    }
-
-    if (!ChocolateDoomLauncher::Services::File::directoryExists("./pwads")) {
-        ChocolateDoomLauncher::Services::File::createDirectories("./pwads");
+    if (!ChocolateDoomLauncher::Services::File::directoryExists("./wads")) {
+        ChocolateDoomLauncher::Services::File::createDirectories("./wads");
     }
 
     // Check if Chocolate Doom exists.

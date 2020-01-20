@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <fstream>
+#include <string.h>
 #include <switch.h>
 
 #include "Doom.hpp"
@@ -24,14 +26,53 @@
 #include "../Application.hpp"
 
 namespace ChocolateDoomLauncher::Services {
+    std::vector<std::string> Doom::getWADSInDir(std::string path, WADType type) {
+        std::vector<std::string> wads;
+
+        auto files = Services::File::filenamesInDirectory(path);
+        for (auto const& file : files) {
+            if (file.compare(file.length() - 4, 4, ".wad") || file.compare(file.length() - 4, 4, ".WAD")) {
+                auto fileType = getWADType(path + "/" + file);
+
+                if (fileType == type) {
+                    wads.push_back(file);
+                }
+            }
+        }
+
+        return wads;
+    }
+
+    WADType Doom::getWADType(std::string path) {
+        auto result = UNKNOWN_WAD;
+        std::ifstream wadStream(path, std::ios::in | std::ios::binary);
+        if (!wadStream) {
+            return result;
+        }
+
+        char buffer[5];
+        wadStream.read(buffer, 4);
+        buffer[4] = '\0';
+
+        if (strcmp(buffer, "IWAD") == 0) {
+            result = IWAD;
+        } else if (strcmp(buffer, "PWAD") == 0) {
+            result = PWAD;
+        }
+
+        wadStream.close();
+
+        return result;
+    }
+
     bool Doom::loadDoom(std::string iwad, std::string pwad) {
         auto currentWorkingDirectory = File::currentWorkingDirectory();
 
         auto path = currentWorkingDirectory + "/doom.nro";
-        auto args = "-nogui -iwaddir " + currentWorkingDirectory + "/iwads -iwad " + iwad;
+        auto args = "-nogui -waddir " + currentWorkingDirectory + "/iwads -iwad " + iwad;
         
         if (!pwad.empty()) {
-            args += "-pwaddir " + currentWorkingDirectory + "/pwads ";
+            args += " -file " + pwad;
         }
 
         if (R_FAILED(envSetNextLoad(path.c_str(), args.c_str()))) {

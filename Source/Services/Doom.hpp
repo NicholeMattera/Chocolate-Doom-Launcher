@@ -18,12 +18,17 @@
  */
 
 #include <string>
+#include <vector>
+
+#include "../Constants.hpp"
 
 #pragma once
 
 namespace ChocolateDoomLauncher::Services {
     class Doom {
         public:
+            static std::vector<std::string> getWADSInDir(std::string path, WADType type);
+            static WADType getWADType(std::string path);
             static bool loadDoom(std::string iwad, std::string pwad = "");
 
         private:

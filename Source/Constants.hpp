@@ -64,4 +64,10 @@ namespace ChocolateDoomLauncher {
         CENTERED,
         TILE
     } ImageMode;
+
+    typedef enum {
+        UNKNOWN_WAD,
+        IWAD,
+        PWAD
+    } WADType;
 }

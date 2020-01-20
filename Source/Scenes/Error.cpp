@@ -68,6 +68,9 @@ namespace ChocolateDoomLauncher::Scenes {
         if (_header != NULL)
             delete _header;
 
+        if (_error != NULL)
+            delete _error;
+
         if (_footer != NULL)
             delete _footer;
     }

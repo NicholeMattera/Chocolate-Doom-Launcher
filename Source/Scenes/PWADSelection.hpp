@@ -18,6 +18,8 @@
  */
 
 #include <SDL2/SDL.h>
+#include <string>
+#include <vector>
 
 #include "../Scene.hpp"
 #include "../Views/Footer.hpp"
@@ -29,13 +31,15 @@
 namespace ChocolateDoomLauncher::Scenes {
     class PWADSelection : public ChocolateDoomLauncher::Scene {
         public:
-            PWADSelection();
+            PWADSelection(std::string iwad);
             ~PWADSelection();
 
             void buttonsDown(u32 buttons, double dTime);
 
         private:
             SDL_Texture * _backgroundTexture = NULL;
+            std::string _iwad;
+            std::vector<std::string> _wads;
 
             Views::Image * _background = NULL;
             Views::Header * _header = NULL;

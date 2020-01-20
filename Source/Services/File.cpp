@@ -18,6 +18,7 @@
  */
 
 #include <dirent.h>
+#include <iostream>
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -33,9 +34,9 @@ namespace ChocolateDoomLauncher::Services {
     }
 
     bool File::directoryExists(std::string path) {
-        auto dir = opendir(path.c_str());
-        if (dir) {
-            closedir(dir);
+        auto directory = opendir(path.c_str());
+        if (directory) {
+            closedir(directory);
             return true;
         }
 
@@ -80,6 +81,18 @@ namespace ChocolateDoomLauncher::Services {
 
     std::vector<std::string> File::filenamesInDirectory(std::string path) {
         std::vector<std::string> files;
+
+        auto directory = opendir(path.c_str());
+        if (directory) {
+            struct dirent * entry;
+
+            while ((entry = readdir(directory)) != NULL) {
+                auto filename = std::string(entry->d_name);
+                files.push_back(filename);
+            }
+
+            closedir(directory);
+        }
 
         return files;
     }

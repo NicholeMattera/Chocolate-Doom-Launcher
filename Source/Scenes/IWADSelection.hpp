@@ -18,6 +18,8 @@
  */
 
 #include <SDL2/SDL.h>
+#include <string>
+#include <vector>
 
 #include "../Scene.hpp"
 #include "../Views/Footer.hpp"
@@ -36,6 +38,7 @@ namespace ChocolateDoomLauncher::Scenes {
 
         private:
             SDL_Texture * _backgroundTexture = NULL;
+            std::vector<std::string> _wads;
 
             Views::Image * _background = NULL;
             Views::Header * _header = NULL;
