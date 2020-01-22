@@ -27,30 +27,18 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     List::~List() {
-        for (auto it = _rowCache.begin(); it != _rowCache.end(); ++it) {
-            auto rows = it->second;
-            for (auto const& row : rows) {
-                delete row;
-            }
-            rows.clear();
-        }
-        _rowCache.clear();
+        _clearCache();
     }
 
-    ListRow * List::getReusableRow(std::string identifier) {
-        auto rowCache = _rowCache.find(identifier);
-        if (rowCache == _rowCache.end()) {
-            return NULL;
-        }
-
+    ListRow * List::getReusableRow() {
         // We haven't hit the maximum number of rows yet.
-        if ((int) rowCache->second.size() < _maximumNumberOfRows) {
+        if ((int) _rowCache.size() < _maximumNumberOfRows) {
             return NULL;
         }
 
         ListRow * farthestRow = NULL;
         int farthestOffscreenDistance = 0;
-        for (auto const& row : rowCache->second) {
+        for (auto const& row : _rowCache) {
             int distance = -1;
 
             // Is it offscreen and figure out it's distance offscreen.
@@ -77,37 +65,25 @@ namespace ChocolateDoomLauncher::Views {
         _numberOfRows = _delegate->numberOfRows(this);
 
         // Clear our cached rows.
-        for (auto it = _rowCache.begin(); it != _rowCache.end(); ++it) {
-            auto rows = it->second;
-            for (auto const& row : rows) {
-                delete row;
-            }
-            rows.clear();
-        }
-        _rowCache.clear();
+        _clearCache();
 
         auto rowHeight = _delegate->getRowHeight();
-        _maximumNumberOfRows = ceil(frame.h / rowHeight) + 4;
+        _maximumNumberOfRows = ceil(frame.h / rowHeight) + 2;
 
-        int y = 50;
         // Generate our rows.
-        for (int i = 0; i < _numberOfRows && i < _maximumNumberOfRows; i++) {
+        for (int i = 0; i < _numberOfRows; i++) {
+            // No need to generate additional rows right now.
+            if (50 + rowHeight * i > frame.h) {
+                break;
+            }
+
             auto row = _delegate->getRow(this, i);
             row->index = i;
-            row->frame = { 200, y, 880, rowHeight };
+            row->frame = { 200, 50 + rowHeight * i, 880, rowHeight };
             row->hasFocus = (hasFocus && i == _rowSelected);
             addSubView(row);
 
-            auto rowCache = _rowCache.find(row->getIdentifier());
-            if (rowCache == _rowCache.end()) {
-                std::vector<ListRow *> rows;
-                rows.push_back(row);
-                _rowCache.insert(std::pair<std::string, std::vector<ListRow *>>(row->getIdentifier(), rows));
-            } else {
-                rowCache->second.push_back(row);
-            }
-
-            y += rowHeight;
+            _rowCache.push_back(row);
         }
     }
 
@@ -116,14 +92,50 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     void List::selectRow(int index) {
-        // TODO: Handle scrolling.
+        int direction = index > _rowSelected ? 1 : -1;
+        SDL_Rect bounds = { 0, 0, frame.w, frame.h };
+        SDL_Rect intersectedBounds;
 
-        _rowSelected = index;
-        for (auto it = _rowCache.begin(); it != _rowCache.end(); ++it) {
-            auto rows = it->second;
-            for (auto const& row : rows) {
-                row->hasFocus = (hasFocus && row->index == _rowSelected);
+        // Change our focus.
+        for (auto const& row : _rowCache) {
+            row->hasFocus = (hasFocus && row->index == index);
+
+            if (row->index == index) {
+                _rowSelected = index;
+
+                // Is it out of bounds?
+                SDL_IntersectRect(&row->frame, &bounds, &intersectedBounds);
+                if (row->frame.h != intersectedBounds.h) {
+                    _yOffset = _yOffset + (row->frame.h - intersectedBounds.h) * direction;
+                }
             }
         }
+
+        // See if we didn't find the row in our cache.
+        if (_rowSelected != index) {
+            auto row = _delegate->getRow(this, index);
+            if (row->index == -1) {
+                _rowCache.push_back(row);
+                addSubView(row);
+            }
+            row->index = index;
+            row->frame = { 200, 0, 880, _delegate->getRowHeight() };
+            row->hasFocus = hasFocus;
+
+            _yOffset = _yOffset + row->frame.h * direction;
+            _rowSelected = index;
+        }
+
+        // Adjust our y coordinates for scrolling.
+        for (auto const& row : _rowCache) {
+            row->frame.y = 50 + row->index * _delegate->getRowHeight() - _yOffset;
+        }
+    }
+
+    void List::_clearCache() {
+        for (auto const& row : _rowCache) {
+            delete row;
+        }
+        _rowCache.clear();
     }
 }

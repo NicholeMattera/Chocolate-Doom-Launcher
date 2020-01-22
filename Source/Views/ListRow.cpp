@@ -25,11 +25,9 @@
 #include "../Managers/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Views {
-    ListRow::ListRow(std::string identifier) {
+    ListRow::ListRow() {
         auto tm = Managers::Theme::Instance();
         auto fm = Managers::Font::Instance();
-
-        _identifier = identifier;
 
         _titleText = new Text(fm->getFont(StandardFont, 23), "", tm->text);
         _titleText->frame = { 20, 23, 840, 24 };
@@ -49,11 +47,11 @@ namespace ChocolateDoomLauncher::Views {
         Control::onRender(rect, dTime);
     }
 
-    std::string ListRow::getIdentifier() {
-        return _identifier;
-    }
-
     void ListRow::setTitle(std::string text) {
         _titleText->setText(text);
+    }
+
+    std::string ListRow::getTitle() {
+        return _titleText->text;
     }
 }

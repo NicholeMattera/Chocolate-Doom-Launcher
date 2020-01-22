@@ -27,15 +27,13 @@
 namespace ChocolateDoomLauncher::Views {
     class ListRow : public Control {
         public:
-            ListRow(std::string identifier);
+            ListRow();
             void onRender(SDL_Rect rect, double dTime);
-            std::string getIdentifier();
             void setTitle(std::string text);
+            std::string getTitle();
 
-            int index;
+            int index = -1;
         private:
-            std::string _identifier;
-
             Text * _titleText = NULL;
 
     };

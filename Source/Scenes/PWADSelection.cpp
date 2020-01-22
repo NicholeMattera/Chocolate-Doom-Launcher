@@ -117,9 +117,9 @@ namespace ChocolateDoomLauncher::Scenes {
     }
 
     Views::ListRow * PWADSelection::getRow(Views::List * list, int index) {
-        auto row = list->getReusableRow("WadRow");
+        auto row = list->getReusableRow();
         if (row == NULL) {
-            row = new Views::ListRow("WadRow");
+            row = new Views::ListRow();
         }
 
         row->setTitle(_wads.at(index));

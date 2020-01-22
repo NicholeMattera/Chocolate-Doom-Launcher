@@ -125,9 +125,9 @@ namespace ChocolateDoomLauncher::Scenes {
     }
 
     Views::ListRow * IWADSelection::getRow(Views::List * list, int index) {
-        auto row = list->getReusableRow("WadRow");
+        auto row = list->getReusableRow();
         if (row == NULL) {
-            row = new Views::ListRow("WadRow");
+            row = new Views::ListRow();
         }
 
         // Improve this to identify the IWAD.

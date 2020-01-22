@@ -40,17 +40,20 @@ namespace ChocolateDoomLauncher::Views {
         public:
             List(ListDelegate * delegate);
             ~List();
-            ListRow * getReusableRow(std::string identifier);
+            ListRow * getReusableRow();
             void reload();
             int getSelectedRowIndex();
             void selectRow(int index);
 
         private:
+            void _clearCache();
+
             ListDelegate * _delegate = NULL;
             int _numberOfRows = 0;
             int _maximumNumberOfRows = 0;
             int _rowSelected = 0;
-            std::map<std::string, std::vector<ListRow *>> _rowCache;
+            int _yOffset = 0;
+            std::vector<ListRow *> _rowCache;
         
     };
 }
