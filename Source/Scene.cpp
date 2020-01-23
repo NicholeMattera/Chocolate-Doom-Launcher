@@ -17,14 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include "Application.hpp"
 #include "Scene.hpp"
+#include "Models/ViewRender.hpp"
 
 namespace ChocolateDoomLauncher {
     void Scene::render(SDL_Rect rect, double dTime) {
         for (auto const& view : subviews) {
             if (!view->isHidden) {
                 SDL_Rect subviewFrame = view->frame;
-                view->render({ rect.x + subviewFrame.x, rect.y + subviewFrame.y, subviewFrame.w, subviewFrame.h }, dTime);
+                Models::ViewRender subViewRender = view->render({ rect.x + subviewFrame.x, rect.y + subviewFrame.y, subviewFrame.w, subviewFrame.h }, dTime);
+                SDL_RenderCopy(Application::renderer, subViewRender.texture, NULL, &subViewRender.bounds);
             }
         }
     }

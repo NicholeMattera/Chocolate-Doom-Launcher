@@ -29,17 +29,23 @@ namespace ChocolateDoomLauncher {
         subviews.clear();
     }
 
-    void View::render(SDL_Rect rect, double dTime) {
+    Models::ViewRender View::render(SDL_Rect rect, double dTime) {
         if (background.a != 0) {
             SDL_SetRenderDrawColor(Application::renderer, background.r, background.g, background.b, background.a);
             SDL_RenderFillRect(Application::renderer, &rect);
         }
 
+        Models::ViewRender subViewRenders[subviews.size()];
+        int i = 0;
         for (auto const& view : subviews) {
             if (!view->isHidden) {
                 auto subviewFrame = view->frame;
-                view->render({ rect.x + subviewFrame.x, rect.y + subviewFrame.y, subviewFrame.w, subviewFrame.h }, dTime);
+                subViewRenders[i] = view->render({ rect.x + subviewFrame.x, rect.y + subviewFrame.y, subviewFrame.w, subviewFrame.h }, dTime);
+                if (!requiresRendering && subViewRenders[i].requiredRendering) {
+                    requiresRendering = true;
+                }
             }
+            i++;
         }
 
         SDL_Rect bounds = { 0, 0, 0, 0 };
@@ -51,6 +57,7 @@ namespace ChocolateDoomLauncher {
 
         onTick(rect, dTime);
 
+        bool requiredRendering = requiresRendering;
         if (requiresRendering) {
             requiresRendering = false;
 
@@ -69,11 +76,17 @@ namespace ChocolateDoomLauncher {
                 onRender(rect, dTime);
             }
 
+            for (i = 0; i < (int) subviews.size(); i++) {
+                if (subViewRenders[i].texture != NULL) {
+                    SDL_RenderCopy(Application::renderer, subViewRenders[i].texture, NULL, &subViewRenders[i].bounds);
+                }
+            }
+
             SDL_SetRenderTarget(Application::renderer, NULL);
         }
 
         SDL_SetTextureAlphaMod(_texture, alpha);
-        SDL_RenderCopy(Application::renderer, _texture, NULL, &bounds);
+        return { _texture, (clipsToBounds) ? frame : bounds, requiredRendering };
     }
 
     void View::addSubView(View * view) {

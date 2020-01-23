@@ -21,6 +21,8 @@
 #include <switch.h>
 #include <SDL2/SDL.h>
 
+#include "Models/ViewRender.hpp"
+
 #pragma once
 
 namespace ChocolateDoomLauncher {
@@ -37,7 +39,7 @@ namespace ChocolateDoomLauncher {
             virtual ~View();
             virtual void onTick(SDL_Rect rect, double dTime){};
             virtual void onRender(SDL_Rect rect, double dTime){};
-            void render(SDL_Rect rect, double dTime);
+            Models::ViewRender render(SDL_Rect rect, double dTime);
 
             /* Controls */
             bool isFocusable = false;
