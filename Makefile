@@ -43,7 +43,7 @@ SOURCES		:=	Source Source/Managers Source/Models Source/Scenes Source/Services S
 ROMFS		:=	RomFS
 
 APP_TITLE	:=	Chocolate Doom Launcher
-APP_AUTHOR	:=	Nichole Mattera
+APP_AUTHOR	:=	Nichole Mattera (Port: MVG)
 APP_VERSION	:=	1.0.0
 
 #---------------------------------------------------------------------------------
