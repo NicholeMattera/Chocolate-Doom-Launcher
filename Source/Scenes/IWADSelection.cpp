@@ -130,8 +130,8 @@ namespace ChocolateDoomLauncher::Scenes {
             row = new Views::ListRow();
         }
 
-        // Improve this to identify the IWAD.
-        row->setTitle(Services::Doom::identifyIWAD(Services::File::currentWorkingDirectory() + "/wads", _wads.at(index)));
+        Models::WAD wad = _wads.at(index);
+        row->setTitle(wad.name);
 
         return row;
     }

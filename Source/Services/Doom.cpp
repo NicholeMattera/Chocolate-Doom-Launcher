@@ -27,8 +27,8 @@
 #include "../Application.hpp"
 
 namespace ChocolateDoomLauncher::Services {
-    std::vector<std::string> Doom::getWADSInDir(std::string path, WADType type) {
-        std::vector<std::string> wads;
+    std::vector<Models::WAD> Doom::getWADSInDir(std::string path, WADType type) {
+        std::vector<Models::WAD> wads;
 
         auto files = Services::File::filenamesInDirectory(path);
         for (auto const& file : files) {
@@ -36,7 +36,13 @@ namespace ChocolateDoomLauncher::Services {
                 auto fileType = getWADType(path + "/" + file);
 
                 if (fileType == type) {
-                    wads.push_back(file);
+                    Models::WAD wad;
+                    wad.path = path;
+                    wad.filename = file;
+                    wad.name = (type == IWAD) ? identifyIWAD(path, file) : file;
+                    wad.type = type;
+
+                    wads.push_back(wad);
                 }
             }
         }
@@ -71,9 +77,9 @@ namespace ChocolateDoomLauncher::Services {
         std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
         if (filename.compare("DOOM.WAD") == 0) {
-            auto directory = getWADDirectory(path + "/" + filename);
-            auto lump = std::find(directory.begin(), directory.end(), "E4M1");
-            if (lump != directory.end()) {
+            auto lumpNames = getWADLumpNames(path + "/" + filename);
+            auto name = std::find(lumpNames.begin(), lumpNames.end(), "E4M1");
+            if (name != lumpNames.end()) {
                 return "The Ultimate DOOM";
             } else {
                 return "DOOM Registered";
@@ -98,7 +104,7 @@ namespace ChocolateDoomLauncher::Services {
         return filename;
     }
 
-    std::vector<std::string> Doom::getWADDirectory(std::string path) {
+    std::vector<std::string> Doom::getWADLumpNames(std::string path) {
         std::vector<std::string> result;
 
         // Open the WAD file.        
@@ -134,23 +140,22 @@ namespace ChocolateDoomLauncher::Services {
         return result;
     }
 
-    bool Doom::loadDoom(std::string iwad, std::string pwad) {
+    bool Doom::loadDoom(Models::WAD iwad, Models::WAD pwad) {
         auto currentWorkingDirectory = File::currentWorkingDirectory();
 
         auto path = currentWorkingDirectory + "/doom.nro";
-        auto args = "-nogui -waddir " + currentWorkingDirectory + "/wads -iwad " + iwad;
+        auto args = "-nogui -waddir " + currentWorkingDirectory + "/wads -iwad " + iwad.filename;
         
-        if (!pwad.empty()) {
-            args += " -file " + pwad;
+        if (!pwad.filename.empty()) {
+            args += " -file " + pwad.filename;
 
-            int extensionLocation = pwad.find_last_of(".");
-            std::string deh = pwad.substr(0, extensionLocation) + ".deh";
-            if (File::fileExists(currentWorkingDirectory + "/wads/" + deh)) {
+            int extensionLocation = pwad.filename.find_last_of(".");
+            std::string deh = pwad.filename.substr(0, extensionLocation) + ".deh";
+            if (File::fileExists(pwad.path + "/wads/" + deh)) {
                 args += " -deh " + deh;
             }
         }
 
-        printf("%s\n", args.c_str());
         if (R_FAILED(envSetNextLoad(path.c_str(), args.c_str()))) {
             return false;
         }

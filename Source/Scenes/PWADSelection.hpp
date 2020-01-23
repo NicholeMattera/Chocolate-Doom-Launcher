@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include "../Models/WAD.hpp"
 #include "../Scene.hpp"
 #include "../Views/Footer.hpp"
 #include "../Views/Header.hpp"
@@ -33,7 +34,7 @@
 namespace ChocolateDoomLauncher::Scenes {
     class PWADSelection : public Scene, public Views::ListDelegate {
         public:
-            PWADSelection(std::string iwad);
+            PWADSelection(Models::WAD iwad);
             ~PWADSelection();
             void buttonsDown(u32 buttons, double dTime);
             int numberOfRows(Views::List * list);
@@ -41,8 +42,8 @@ namespace ChocolateDoomLauncher::Scenes {
 
         private:
             SDL_Texture * _backgroundTexture = NULL;
-            std::string _iwad;
-            std::vector<std::string> _wads;
+            Models::WAD _iwad;
+            std::vector<Models::WAD> _wads;
 
             Views::Image * _background = NULL;
             Views::Header * _header = NULL;

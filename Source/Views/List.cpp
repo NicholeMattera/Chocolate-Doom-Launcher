@@ -73,13 +73,13 @@ namespace ChocolateDoomLauncher::Views {
         // Generate our rows.
         for (int i = 0; i < _numberOfRows; i++) {
             // No need to generate additional rows right now.
-            if (50 + rowHeight * i > frame.h) {
+            if (rowHeight * i > frame.h) {
                 break;
             }
 
             auto row = _delegate->getRow(this, i);
             row->index = i;
-            row->frame = { 200, 50 + rowHeight * i, 880, rowHeight };
+            row->frame = { 200, rowHeight * i, 880, rowHeight };
             row->hasFocus = (hasFocus && i == _rowSelected);
             addSubView(row);
 
@@ -128,7 +128,7 @@ namespace ChocolateDoomLauncher::Views {
 
         // Adjust our y coordinates for scrolling.
         for (auto const& row : _rowCache) {
-            row->frame.y = 50 + row->index * _delegate->getRowHeight() - _yOffset;
+            row->frame.y = row->index * _delegate->getRowHeight() - _yOffset;
         }
     }
 

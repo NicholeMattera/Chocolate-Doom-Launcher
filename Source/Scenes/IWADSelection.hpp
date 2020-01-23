@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include "../Models/WAD.hpp"
 #include "../Scene.hpp"
 #include "../Views/Footer.hpp"
 #include "../Views/Header.hpp"
@@ -41,7 +42,7 @@ namespace ChocolateDoomLauncher::Scenes {
 
         private:
             SDL_Texture * _backgroundTexture = NULL;
-            std::vector<std::string> _wads;
+            std::vector<Models::WAD> _wads;
 
             Views::Image * _background = NULL;
             Views::Header * _header = NULL;

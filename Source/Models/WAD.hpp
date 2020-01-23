@@ -18,24 +18,18 @@
  */
 
 #include <string>
-#include <vector>
 
 #include "../Constants.hpp"
-#include "../Models/WAD.hpp"
 
 #pragma once
 
-namespace ChocolateDoomLauncher::Services {
-    class Doom {
+namespace ChocolateDoomLauncher::Models {
+    class WAD {
         public:
-            static std::vector<Models::WAD> getWADSInDir(std::string path, WADType type);
-            static WADType getWADType(std::string path);
-            static std::string identifyIWAD(std::string path, std::string filename);
-            static std::vector<std::string> getWADLumpNames(std::string path);
-
-            static bool loadDoom(Models::WAD iwad, Models::WAD pwad = { "", "", "", PWAD });
-
-        private:
+            std::string path = "";
+            std::string filename = "";
+            std::string name = "";
+            WADType type;
 
     };
 }

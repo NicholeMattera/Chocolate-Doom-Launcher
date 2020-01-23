@@ -30,7 +30,7 @@
 #include "../Services/File.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
-    PWADSelection::PWADSelection(std::string iwad) {
+    PWADSelection::PWADSelection(Models::WAD iwad) {
         auto tm = Managers::Theme::Instance();
 
         background = tm->background;
@@ -122,7 +122,8 @@ namespace ChocolateDoomLauncher::Scenes {
             row = new Views::ListRow();
         }
 
-        row->setTitle(_wads.at(index));
+        Models::WAD wad = _wads.at(index);
+        row->setTitle(wad.name);
 
         return row;
     }
