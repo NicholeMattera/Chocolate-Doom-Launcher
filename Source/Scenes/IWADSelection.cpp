@@ -45,7 +45,7 @@ namespace ChocolateDoomLauncher::Scenes {
         _background->frame = { 0, 0, 1280, 720 };
         addSubView(_background);
 
-        _header = new Views::Header("Choose a IWAD", true);
+        _header = new Views::Header("Choose a game", true);
         _header->frame = { 0, 0, 1280, 88 };
         addSubView(_header);
 
@@ -61,12 +61,12 @@ namespace ChocolateDoomLauncher::Scenes {
 
         auto openIWADAction = new Models::FooterAction();
         openIWADAction->button = A_BUTTON;
-        openIWADAction->text = "Open IWAD";
+        openIWADAction->text = "Start game";
         _footer->addAction(openIWADAction);
 
         auto openPWADAction = new Models::FooterAction();
         openPWADAction->button = X_BUTTON;
-        openPWADAction->text = "Open IWAD with PWAD";
+        openPWADAction->text = "Start game with mod";
         _footer->addAction(openPWADAction);
 
         auto quitAction = new Models::FooterAction();
