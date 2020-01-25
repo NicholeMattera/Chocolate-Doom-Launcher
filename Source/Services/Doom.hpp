@@ -29,15 +29,13 @@
 namespace ChocolateDoomLauncher::Services {
     class Doom {
         public:
-            static WADType getWADType(std::string path);
-            static std::string identifyIWAD(std::string filename);
-            static std::vector<std::string> getWADLumpNames(std::string path);
-
             static std::vector<Models::Game> getGames();
-
             static bool loadDoom(Models::Game game);
 
         private:
-
+            static WADType _getWADType(std::string path);
+            static std::string _identifyIWAD(std::string filename);
+            static std::vector<std::string> _getWADLumpNames(std::string path);
+        
     };
 }

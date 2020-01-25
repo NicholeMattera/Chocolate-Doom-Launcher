@@ -74,6 +74,22 @@ namespace ChocolateDoomLauncher::Services {
         return bSuccess;
     }
 
+    std::string File::sanitizeDirectoryName(std::string name) {
+        std::string result = "";
+
+        for (char& c : name) {
+            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || c == '.') {
+                result += c;
+            } else if (c >= 'A' && c <= 'Z') {
+                result += std::tolower(c);
+            } else if (result.back() != '_') {
+                result += '_';
+            }
+        }
+
+        return result;
+    }
+
     bool File::fileExists(std::string path) {
         struct stat buffer;
         return (stat(path.c_str(), &buffer) == 0);

@@ -28,6 +28,7 @@ namespace ChocolateDoomLauncher::Services {
             static std::string currentWorkingDirectory();
             static bool directoryExists(std::string path);
             static bool createDirectories(std::string path);
+            static std::string sanitizeDirectoryName(std::string name);
 
             static bool fileExists(std::string path);
             static std::vector<std::string> filenamesInDirectory(std::string path);
