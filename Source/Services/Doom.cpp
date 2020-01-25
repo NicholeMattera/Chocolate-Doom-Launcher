@@ -77,6 +77,8 @@ namespace ChocolateDoomLauncher::Services {
             return "Freedoom: Phase 1";
         } else if (filename.compare("FREEDOOM2.WAD") == 0) {
             return "Freedoom: Phase 2";
+        } else if (filename.compare("HACX.WAD") == 0) {
+            return "Hacx";
         }
         
         // Unknown
@@ -190,7 +192,7 @@ namespace ChocolateDoomLauncher::Services {
             game.name = nameOption->value;
             game.iwad = iwadOption->value;
 
-            // Get all the deh files.
+            // Get all the dehacked files.
             auto dehOptions = config->findAllOptions("deh");
             for (auto const& dehOption : dehOptions) {
                 game.dehs.push_back(dehOption->value);
@@ -202,10 +204,34 @@ namespace ChocolateDoomLauncher::Services {
                 game.files.push_back(fileOption->value);
             }
 
-            // Get all the pwad files that need to be merged with the iwad.
+            // Get all the pwad files that need to be merged using deutex's behavior with the iwad.
             auto mergeOptions = config->findAllOptions("merge");
             for (auto const& mergeOption : mergeOptions) {
                 game.merges.push_back(mergeOption->value);
+            }
+
+            // Get all the pwad files that need to be merged using NWT's behavior with the iwad for flats and sprites.
+            auto aaOptions = config->findAllOptions("aa");
+            for (auto const& aaOption : aaOptions) {
+                game.aas.push_back(aaOption->value);
+            }
+
+            // Get all the pwad files that need to be merged using NWT's behavior with the iwad for flats.
+            auto afOptions = config->findAllOptions("af");
+            for (auto const& afOption : afOptions) {
+                game.afs.push_back(afOption->value);
+            }
+
+            // Get all the pwad files that need to be merged using NWT's behavior with the iwad for sprites.
+            auto asOptions = config->findAllOptions("as");
+            for (auto const& asOption : asOptions) {
+                game.ass.push_back(asOption->value);
+            }
+
+            // Get all the pwad files that need to be merged using NWT's behavior with the iwad.
+            auto nwtMergeOptions = config->findAllOptions("nwtmerge");
+            for (auto const& nwtMergeOption : nwtMergeOptions) {
+                game.nwtmerges.push_back(nwtMergeOption->value);
             }
 
             result.push_back(game);
@@ -248,6 +274,34 @@ namespace ChocolateDoomLauncher::Services {
             args += " -merge";
             for (auto const& merge : game.merges) {
                 args += " " + merge;
+            }
+        }
+
+        if (game.aas.size() > 0) {
+            args += " -aa";
+            for (auto const& aa : game.aas) {
+                args += " " + aa;
+            }
+        }
+
+        if (game.afs.size() > 0) {
+            args += " -af";
+            for (auto const& af : game.afs) {
+                args += " " + af;
+            }
+        }
+
+        if (game.ass.size() > 0) {
+            args += " -as";
+            for (auto const& as : game.ass) {
+                args += " " + as;
+            }
+        }
+
+        if (game.nwtmerges.size() > 0) {
+            args += " -nwtmerge";
+            for (auto const& nwtmerge : game.nwtmerges) {
+                args += " " + nwtmerge;
             }
         }
 

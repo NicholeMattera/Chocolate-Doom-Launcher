@@ -33,6 +33,10 @@ namespace ChocolateDoomLauncher::Models {
             std::vector<std::string> dehs;
             std::vector<std::string> files;
             std::vector<std::string> merges;
+            std::vector<std::string> aas;
+            std::vector<std::string> afs;
+            std::vector<std::string> ass;
+            std::vector<std::string> nwtmerges;
 
     };
 }
