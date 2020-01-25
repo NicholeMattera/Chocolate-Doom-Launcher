@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-#include "../Models/WAD.hpp"
+#include "../Models/Game.hpp"
 #include "../Scene.hpp"
 #include "../Views/Footer.hpp"
 #include "../Views/Header.hpp"
@@ -32,17 +32,17 @@
 #pragma once
 
 namespace ChocolateDoomLauncher::Scenes {
-    class IWADSelection : public Scene, public Views::ListDelegate {
+    class GameSelection : public Scene, public Views::ListDelegate {
         public:
-            IWADSelection();
-            ~IWADSelection();
+            GameSelection();
+            ~GameSelection();
             void buttonsDown(u32 buttons, double dTime);
             int numberOfRows(Views::List * list);
             Views::ListRow * getRow(Views::List * list, int index);
 
         private:
             SDL_Texture * _backgroundTexture = NULL;
-            std::vector<Models::WAD> _wads;
+            std::vector<Models::Game> _games;
 
             Views::Image * _background = NULL;
             Views::Header * _header = NULL;

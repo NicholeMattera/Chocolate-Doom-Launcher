@@ -61,7 +61,7 @@ CXXFLAGS	:=	$(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS		:=	-g $(ARCH)
 LDFLAGS		=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS		:=	-lSDL2_ttf -lSDL2_image -lSDL2_gfx -lwebp -lpng -ljpeg -lnx \
+LIBS		:=	-lSimpleIniParser -lSDL2_ttf -lSDL2_image -lSDL2_gfx -lwebp -lpng -ljpeg -lnx \
 				`sdl2-config --libs` `freetype-config --libs`
 
 ifneq ($(shell which ccache),)
@@ -73,7 +73,7 @@ endif
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX)
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/SimpleIniParser
 
 
 #---------------------------------------------------------------------------------
@@ -169,7 +169,11 @@ endif
 all: $(BUILD)
 
 $(BUILD):
+ifeq ($(wildcard $(CURDIR)/SimpleIniParser/LICENSE),)
+	@$(error "Please run 'git submodule update --init' before running 'make'")
+endif
 	@[ -d $@ ] || mkdir -p $@
+	@$(MAKE) -C $(CURDIR)/SimpleIniParser -f $(CURDIR)/SimpleIniParser/Makefile
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------

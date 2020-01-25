@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <SimpleIniParser.hpp>
 #include <string.h>
 #include <switch.h>
 
@@ -27,29 +28,6 @@
 #include "../Application.hpp"
 
 namespace ChocolateDoomLauncher::Services {
-    std::vector<Models::WAD> Doom::getWADSInDir(std::string path, WADType type) {
-        std::vector<Models::WAD> wads;
-
-        auto files = Services::File::filenamesInDirectory(path);
-        for (auto const& file : files) {
-            if (file.compare(file.length() - 4, 4, ".wad") || file.compare(file.length() - 4, 4, ".WAD")) {
-                auto fileType = getWADType(path + "/" + file);
-
-                if (fileType == type) {
-                    Models::WAD wad;
-                    wad.path = path;
-                    wad.filename = file;
-                    wad.name = (type == IWAD) ? identifyIWAD(path, file) : file;
-                    wad.type = type;
-
-                    wads.push_back(wad);
-                }
-            }
-        }
-
-        return wads;
-    }
-
     WADType Doom::getWADType(std::string path) {
         auto result = UNKNOWN_WAD;
         std::ifstream wadStream(path, std::ios::in | std::ios::binary);
@@ -72,12 +50,13 @@ namespace ChocolateDoomLauncher::Services {
         return result;
     }
 
-    std::string Doom::identifyIWAD(std::string path, std::string filename) {
+    std::string Doom::identifyIWAD(std::string filename) {
         // Transform path to all uppercase.
         std::transform(filename.begin(), filename.end(), filename.begin(), ::toupper);
 
         if (filename.compare("DOOM.WAD") == 0) {
-            auto lumpNames = getWADLumpNames(path + "/" + filename);
+            auto cwd = Services::File::currentWorkingDirectory();
+            auto lumpNames = getWADLumpNames(cwd + "/wads/" + filename);
             auto name = std::find(lumpNames.begin(), lumpNames.end(), "E4M1");
             if (name != lumpNames.end()) {
                 return "The Ultimate DOOM";
@@ -140,19 +119,135 @@ namespace ChocolateDoomLauncher::Services {
         return result;
     }
 
-    bool Doom::loadDoom(Models::WAD iwad, Models::WAD pwad) {
-        auto currentWorkingDirectory = File::currentWorkingDirectory();
+    std::vector<Models::Game> Doom::getGames() {
+        std::vector<Models::Game> result;
+        auto cwd = Services::File::currentWorkingDirectory();
 
-        auto path = currentWorkingDirectory + "/doom.nro";
-        auto args = "-nogui -waddir " + currentWorkingDirectory + "/wads -iwad " + iwad.filename;
+        // Get base games.
+        auto wadFilenames = Services::File::filenamesInDirectory(cwd + "/wads");
+        for (auto const& filename : wadFilenames) {
+            // Make sure our filename is even long enough to be a WAD file.
+            if (filename.length() <= 4) {
+                continue;
+            }
+
+            // Extract the extension and make it all uppercase.
+            auto extension = filename.substr(filename.length() - 4, 4);
+            std::transform(extension.begin(), extension.end(), extension.begin(), ::toupper);
+
+            // Does it not end in a WAD file extension?
+            if (extension.compare(".WAD") != 0) {
+                continue;
+            }
+
+            // Make sure it's an IWAD.
+            auto wadType = getWADType(cwd + "/wads/" + filename);
+            if (wadType == PWAD) {
+                continue;
+            }
+
+            Models::Game game;
+            game.isMod = false;
+            game.name = identifyIWAD(filename);
+            game.iwad = filename;
+
+            result.push_back(game);
+        }
+
+        // Get mods.
+        auto modFilenames = Services::File::filenamesInDirectory(cwd + "/mods");
+        for (auto const& filename : modFilenames) {
+            // Make sure our filename is even long enough to be a INI file.
+            if (filename.length() <= 4) {
+                continue;
+            }
+
+            // Extract the extension and make it all uppercase.
+            auto extension = filename.substr(filename.length() - 4, 4);
+            std::transform(extension.begin(), extension.end(), extension.begin(), ::toupper);
+
+            // Does it not end in a INI file extension?
+            if (extension.compare(".INI") != 0) {
+                continue;
+            }
+
+            // Parse the INI file.
+            auto config = simpleIniParser::Ini::parseFile(cwd + "/mods/" + filename);
+            if (config == nullptr) {
+                continue;
+            }
+
+            // Get the name and iwad of the mod.
+            auto nameOption = config->findFirstOption("name");
+            auto iwadOption = config->findFirstOption("iwad");
+            if (nameOption == nullptr || iwadOption == nullptr) {
+                delete config;
+                continue;
+            }
+
+            Models::Game game;
+            game.isMod = true;
+            game.name = nameOption->value;
+            game.iwad = iwadOption->value;
+
+            // Get all the deh files.
+            auto dehOptions = config->findAllOptions("deh");
+            for (auto const& dehOption : dehOptions) {
+                game.dehs.push_back(dehOption->value);
+            }
+            
+            // Get all the pwad files to load.
+            auto fileOptions = config->findAllOptions("file");
+            for (auto const& fileOption : fileOptions) {
+                game.files.push_back(fileOption->value);
+            }
+
+            // Get all the pwad files that need to be merged with the iwad.
+            auto mergeOptions = config->findAllOptions("merge");
+            for (auto const& mergeOption : mergeOptions) {
+                game.merges.push_back(mergeOption->value);
+            }
+
+            result.push_back(game);
+            delete config;
+        }
+
+        // Sort games.
+        std::sort(
+            result.begin(),
+            result.end(),
+            [](const Models::Game & a, const Models::Game & b) -> bool {
+                return a.name < b.name;
+            });
+
+        return result;
+    }
+
+    bool Doom::loadDoom(Models::Game game) {
+        auto cwd = File::currentWorkingDirectory();
+
+        auto path = cwd + "/doom.nro";
+        auto args = "-nogui -waddir " + cwd + "/wads -iwad " + game.iwad;
+        args += " -config " + cwd + "/default.cfg -extraconfig " + cwd + "/chocolate-doom.cfg";
         
-        if (!pwad.filename.empty()) {
-            args += " -file " + pwad.filename;
+        if (game.dehs.size() > 0) {
+            args += " -deh";
+            for (auto const& deh : game.dehs) {
+                args += " " + cwd + "/dehs/" + deh;
+            }
+        }
 
-            int extensionLocation = pwad.filename.find_last_of(".");
-            std::string deh = pwad.filename.substr(0, extensionLocation) + ".deh";
-            if (File::fileExists(pwad.path + "/wads/" + deh)) {
-                args += " -deh " + deh;
+        if (game.files.size() > 0) {
+            args += " -file";
+            for (auto const& file : game.files) {
+                args += " " + file;
+            }
+        }
+
+        if (game.merges.size() > 0) {
+            args += " -merge";
+            for (auto const& merge : game.merges) {
+                args += " " + merge;
             }
         }
 

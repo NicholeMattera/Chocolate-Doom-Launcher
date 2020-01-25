@@ -36,5 +36,6 @@ namespace ChocolateDoomLauncher::Managers {
         selected_border_2 = { 67, 0, 0, 255 };
         text = { 255, 255, 255, 255 };
         active_text = { 0, 255, 196, 255 };
+        disabled_text = { 128, 128, 128, 255 };
     }
 }

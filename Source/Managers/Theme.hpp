@@ -33,6 +33,7 @@ namespace ChocolateDoomLauncher::Managers {
             SDL_Color selected_border_2;
             SDL_Color text;
             SDL_Color active_text;
+            SDL_Color disabled_text;
 
             static Theme * Instance();
         

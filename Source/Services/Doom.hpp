@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "../Constants.hpp"
+#include "../Models/Game.hpp"
 #include "../Models/WAD.hpp"
 
 #pragma once
@@ -28,12 +29,13 @@
 namespace ChocolateDoomLauncher::Services {
     class Doom {
         public:
-            static std::vector<Models::WAD> getWADSInDir(std::string path, WADType type);
             static WADType getWADType(std::string path);
-            static std::string identifyIWAD(std::string path, std::string filename);
+            static std::string identifyIWAD(std::string filename);
             static std::vector<std::string> getWADLumpNames(std::string path);
 
-            static bool loadDoom(Models::WAD iwad, Models::WAD pwad = { "", "", "", PWAD });
+            static std::vector<Models::Game> getGames();
+
+            static bool loadDoom(Models::Game game);
 
         private:
 

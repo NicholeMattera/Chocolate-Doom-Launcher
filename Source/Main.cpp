@@ -19,13 +19,21 @@
 
 #include "Application.hpp"
 #include "Scenes/Error.hpp"
-#include "Scenes/IWADSelection.hpp"
+#include "Scenes/GameSelection.hpp"
 #include "Services/File.hpp"
 
 int main() {
     auto * app = new ChocolateDoomLauncher::Application();
 
     // Make sure our folder structure is in place.
+    if (!ChocolateDoomLauncher::Services::File::directoryExists("./dehs")) {
+        ChocolateDoomLauncher::Services::File::createDirectories("./dehs");
+    }
+
+    if (!ChocolateDoomLauncher::Services::File::directoryExists("./mods")) {
+        ChocolateDoomLauncher::Services::File::createDirectories("./mods");
+    }
+
     if (!ChocolateDoomLauncher::Services::File::directoryExists("./wads")) {
         ChocolateDoomLauncher::Services::File::createDirectories("./wads");
     }
@@ -36,7 +44,7 @@ int main() {
     // Start our first scene.
     int val;
     if (exists) {
-        val = app->start(new ChocolateDoomLauncher::Scenes::IWADSelection());
+        val = app->start(new ChocolateDoomLauncher::Scenes::GameSelection());
     } else {
         val = app->start(new ChocolateDoomLauncher::Scenes::Error("Chocolate Doom is missing, please download Chocolate Doom and install it into:\n \n" + ChocolateDoomLauncher::Services::File::currentWorkingDirectory()));
     }

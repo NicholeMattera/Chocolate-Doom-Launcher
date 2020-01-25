@@ -25,13 +25,45 @@
 #include "../Managers/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Views {
-    ListRow::ListRow() {
+    ListRow::ListRow(ListRowStyle style) {
         auto tm = Managers::Theme::Instance();
         auto fm = Managers::Font::Instance();
 
-        _titleText = new Text(fm->getFont(StandardFont, 23), "", tm->text);
-        _titleText->frame = { 20, 23, 840, 24 };
-        addSubView(_titleText);
+        _primaryText = new Text(fm->getFont(StandardFont, 23), "", tm->text);
+        if (style != SUBTITLE) {
+            _primaryText->frame = { 20, 23, 840, 24 };
+        } else {
+            _primaryText->frame = { 20, 10, 840, 24 };
+        }
+        addSubView(_primaryText);
+
+        if (style != DEFAULT) {
+            if (style == BOOLEAN) {
+                _secondaryText = new Text(fm->getFont(StandardFont, 18), "Off", tm->disabled_text);
+            } else {
+                _secondaryText = new Text(fm->getFont(StandardFont, 18), "", (style == SUBTITLE) ? tm->disabled_text : tm->active_text);
+            }
+
+            if (style != SUBTITLE) {
+                _secondaryText->textAlignment = RIGHT_ALIGN;
+                _secondaryText->frame = { 20, 29, 840, 19 };
+            } else {
+                _secondaryText->textAlignment = LEFT_ALIGN;
+                _secondaryText->frame = { 20, 41, 840, 19 };
+            }
+
+            addSubView(_secondaryText);
+        }
+    }
+
+    ListRow::~ListRow() {
+        if (_primaryText != NULL) {
+            delete _primaryText;
+        }
+
+        if (_secondaryText != NULL) {
+            delete _secondaryText;
+        }
     }
 
     void ListRow::onRender(SDL_Rect rect, double dTime) {
@@ -47,11 +79,23 @@ namespace ChocolateDoomLauncher::Views {
         Control::onRender(rect, dTime);
     }
 
-    void ListRow::setTitle(std::string text) {
-        _titleText->setText(text);
+    void ListRow::setPrimaryText(std::string text) {
+        if (_primaryText != NULL) {
+            _primaryText->setText(text);
+        }
     }
 
-    std::string ListRow::getTitle() {
-        return _titleText->text;
+    std::string ListRow::getPrimaryText() {
+        return (_primaryText == NULL) ? "" : _primaryText->text;
+    }
+
+    void ListRow::setSecondaryText(std::string text) {
+        if (_secondaryText != NULL) {
+            _secondaryText->setText(text);
+        }
+    }
+
+    std::string ListRow::getSecondaryText() {
+        return (_secondaryText == NULL) ? "" : _secondaryText->text;
     }
 }

@@ -29,7 +29,7 @@ namespace ChocolateDoomLauncher::Models {
         public:
             bool isMod = false;
             std::string name = "";
-            WAD iwad;
+            std::string iwad = "";
             std::vector<std::string> dehs;
             std::vector<std::string> files;
             std::vector<std::string> merges;

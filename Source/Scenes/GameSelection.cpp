@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
  
+#include <limits.h>
 #include <SDL2/SDL_image.h>
 
 #include "Error.hpp"
-#include "IWADSelection.hpp"
-#include "PWADSelection.hpp"
+#include "GameSelection.hpp"
 #include "../Application.hpp"
 #include "../Constants.hpp"
 #include "../Models/FooterAction.hpp"
@@ -30,12 +30,11 @@
 #include "../Services/File.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
-    PWADSelection::PWADSelection(Models::WAD iwad) {
+    GameSelection::GameSelection() {
         auto tm = Managers::Theme::Instance();
 
         background = tm->background;
-        _iwad = iwad;
-        _wads = Services::Doom::getWADSInDir(Services::File::currentWorkingDirectory() + "/wads", PWAD);
+        _games = Services::Doom::getGames();
 
         auto backgroundSurface = IMG_Load("romfs:/Background.png");
         _backgroundTexture = SDL_CreateTextureFromSurface(Application::renderer, backgroundSurface);
@@ -45,7 +44,7 @@ namespace ChocolateDoomLauncher::Scenes {
         _background->frame = { 0, 0, 1280, 720 };
         addSubView(_background);
 
-        _header = new Views::Header("Choose a mod", true);
+        _header = new Views::Header("Choose a game", true);
         _header->frame = { 0, 0, 1280, 88 };
         addSubView(_header);
 
@@ -59,18 +58,18 @@ namespace ChocolateDoomLauncher::Scenes {
         _footer->frame = { 0, 647, 1280, 73 };
         addSubView(_footer);
 
-        auto openPWADAction = new Models::FooterAction();
-        openPWADAction->button = A_BUTTON;
-        openPWADAction->text = "Start game";
-        _footer->addAction(openPWADAction);
+        auto openIWADAction = new Models::FooterAction();
+        openIWADAction->button = A_BUTTON;
+        openIWADAction->text = "Start game";
+        _footer->addAction(openIWADAction);
 
         auto quitAction = new Models::FooterAction();
         quitAction->button = B_BUTTON;
-        quitAction->text = "Back";
+        quitAction->text = "Quit";
         _footer->addAction(quitAction);
     }
 
-    PWADSelection::~PWADSelection() {
+    GameSelection::~GameSelection() {
         if (_backgroundTexture != NULL)
             SDL_DestroyTexture(_backgroundTexture);
 
@@ -87,7 +86,7 @@ namespace ChocolateDoomLauncher::Scenes {
             delete _footer;
     }
 
-    void PWADSelection::buttonsDown(u32 buttons, double dTime) {
+    void GameSelection::buttonsDown(u32 buttons, double dTime) {
         if (buttons & KEY_UP) {
             int rowSelected = _list->getSelectedRowIndex();
             if (rowSelected != 0) {
@@ -96,34 +95,35 @@ namespace ChocolateDoomLauncher::Scenes {
         }
         else if (buttons & KEY_DOWN) {
             int rowSelected = _list->getSelectedRowIndex();
-            if (rowSelected != (int) _wads.size() - 1) {
+            if (rowSelected != (int) _games.size() - 1) {
                 _list->selectRow(rowSelected + 1);
             }
         }
         else if (buttons & KEY_A) {
-            if (!Services::Doom::loadDoom(_iwad, _wads.at(_list->getSelectedRowIndex()))) {
+            if (_games.size() != 0 && !Services::Doom::loadDoom(_games.at(_list->getSelectedRowIndex()))) {
                 Application::switchScene(new Error("Unable to start Chocolate Doom."));
             }
         }
         else if (buttons & KEY_B) {
-            Application::switchScene(new IWADSelection());
+            Application::switchScene(NULL);
         }
     }
 
     // Views::ListDelegate Methods
 
-    int PWADSelection::numberOfRows(Views::List * list) {
-        return _wads.size();
+    int GameSelection::numberOfRows(Views::List * list) {
+        return _games.size();
     }
 
-    Views::ListRow * PWADSelection::getRow(Views::List * list, int index) {
+    Views::ListRow * GameSelection::getRow(Views::List * list, int index) {
         auto row = list->getReusableRow();
         if (row == NULL) {
-            row = new Views::ListRow();
+            row = new Views::ListRow(SUBTITLE);
         }
 
-        Models::WAD wad = _wads.at(index);
-        row->setTitle(wad.name);
+        Models::Game game = _games.at(index);
+        row->setPrimaryText(game.name);
+        row->setSecondaryText((game.isMod) ? "Mod" : "Base Game");
 
         return row;
     }

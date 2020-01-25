@@ -21,20 +21,26 @@
 
 #include "Control.hpp"
 #include "Text.hpp"
+#include "../Constants.hpp"
 
 #pragma once
 
 namespace ChocolateDoomLauncher::Views {
     class ListRow : public Control {
         public:
-            ListRow();
+            ListRow(ListRowStyle style);
+            ~ListRow();
             void onRender(SDL_Rect rect, double dTime);
-            void setTitle(std::string text);
-            std::string getTitle();
+            
+            void setPrimaryText(std::string text);
+            std::string getPrimaryText();
+            void setSecondaryText(std::string text);
+            std::string getSecondaryText();
 
             int index = -1;
         private:
-            Text * _titleText = NULL;
+            Text * _primaryText = NULL;
+            Text * _secondaryText = NULL;
 
     };
 }

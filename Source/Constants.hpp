@@ -70,4 +70,11 @@ namespace ChocolateDoomLauncher {
         IWAD,
         PWAD
     } WADType;
+    
+    typedef enum {
+        DEFAULT,
+        SUBTITLE,
+        VALUE,
+        BOOLEAN
+    } ListRowStyle;
 }
