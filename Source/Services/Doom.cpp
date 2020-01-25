@@ -160,7 +160,7 @@ namespace ChocolateDoomLauncher::Services {
         auto cwd = File::currentWorkingDirectory();
 
         auto path = cwd + "/doom.nro";
-        auto args = path + " -nogui -waddir " + cwd + "/wads -iwad " + game.iwad;
+        auto args = path + " -launcher -waddir " + cwd + "/wads -iwad " + game.iwad;
         if (game.isMod) {
             args += " -savedir " + cwd + "/savegames/" + Services::File::sanitizeDirectoryName(game.name) + "/";
         }
@@ -214,7 +214,6 @@ namespace ChocolateDoomLauncher::Services {
             }
         }
 
-        printf("%s %s\n", path.c_str(), args.c_str());
         if (R_FAILED(envSetNextLoad(path.c_str(), args.c_str()))) {
             return false;
         }
