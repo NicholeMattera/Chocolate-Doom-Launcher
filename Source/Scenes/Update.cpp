@@ -25,6 +25,7 @@
 #include "../Scenes/GameSelection.hpp"
 #include "../Services/File.hpp"
 #include "../Services/Theme.hpp"
+#include "../Services/Version.hpp"
 #include "../Services/Web.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
@@ -88,6 +89,11 @@ namespace ChocolateDoomLauncher::Scenes {
 
             if (!restartRequired) {
                 Application::switchScene(new Scenes::GameSelection());
+            } else {
+                auto path = Application::currentApplication->getPath();
+                auto args = path + " -do-not-update";
+                envSetNextLoad(path.c_str(), args.c_str());
+                Application::switchScene(NULL);
             }
 
             _downloadsComplete = true;
@@ -108,7 +114,7 @@ namespace ChocolateDoomLauncher::Scenes {
         );
 
         // If there isn't a newer version
-        if (true) {
+        if (!Services::Version::isNewerVersion(Services::Version::getCurrentVersion(), Services::Version::sanitizeVersion(latestVersion))) {
             return false;
         }
 
@@ -124,14 +130,19 @@ namespace ChocolateDoomLauncher::Scenes {
 
         _text->setText("Downloading latest release of Chocolate Doom Launcher...");
         Application::currentApplication->render();
+        Application::currentApplication->closeRomFS();
 
-        auto launcherRelease = Services::Web::downloadFile(
+        std::string appPath = Application::currentApplication->getPath();
+        auto launcher = Services::Web::downloadFile(
             latestReleaseURL,
+            appPath + ".tmp",
             std::bind(&Update::_onProgressUpdate, this, std::placeholders::_1)
         );
 
-        // Quit RomFS.
-        // Overwrite NRO.
+        if (launcher[0] == '1') {
+            Services::File::deleteFile(appPath);
+            rename((appPath + ".tmp").c_str(), appPath.c_str());
+        }
 
         return true;
     }
@@ -151,10 +162,15 @@ namespace ChocolateDoomLauncher::Scenes {
                 "chocolate-doom-nx",
                 std::bind(&Update::_onProgressUpdate, this, std::placeholders::_1)
             );
+
+            newVersionAvailable = Services::Version::isNewerVersion(
+                Services::Version::getVersionOfApp("./doom.nro"),
+                Services::Version::sanitizeVersion(latestVersion)
+            );
         }
 
         // If there is a newer version or it doesn't already exists.
-        if (!Services::File::fileExists("./doom.nro") || newVersionAvailable) {
+        if (!doomExists || newVersionAvailable) {
             _text->setText("Getting latest release of Chocolate Doom NX...");
             Application::currentApplication->render();
 
@@ -168,12 +184,16 @@ namespace ChocolateDoomLauncher::Scenes {
             _text->setText("Downloading latest release of Chocolate Doom NX...");
             Application::currentApplication->render();
 
-            auto launcherRelease = Services::Web::downloadFile(
+            auto game = Services::Web::downloadFile(
                 latestReleaseURL,
+                "./doom.nro.tmp",
                 std::bind(&Update::_onProgressUpdate, this, std::placeholders::_1)
             );
 
-            // Overwrite NRO.
+            if (game[0] == '1') {
+                Services::File::deleteFile("./doom.nro");
+                rename("./doom.nro.tmp", "./doom.nro");
+            }
         }
     }
 

@@ -33,7 +33,7 @@ namespace ChocolateDoomLauncher::Services {
             static inline SDL_Color selected_border_2 = { 64, 0, 0, 255 };
             static inline SDL_Color text = { 255, 255, 255, 255 };
             static inline SDL_Color active_text = { 255, 0, 0, 255 };
-            static inline SDL_Color disabled_text = { 64, 0, 0, 255 };
+            static inline SDL_Color disabled_text = { 128, 128, 128, 255 };
 
     };
 }

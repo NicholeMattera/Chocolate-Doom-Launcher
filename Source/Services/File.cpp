@@ -90,6 +90,14 @@ namespace ChocolateDoomLauncher::Services {
         return result;
     }
 
+    bool File::deleteFile(std::string path) {
+        if (fileExists(path)) {
+            return remove(path.c_str()) == 0;
+        }
+
+        return false;
+    }
+
     bool File::fileExists(std::string path) {
         struct stat buffer;
         return (stat(path.c_str(), &buffer) == 0);

@@ -19,6 +19,8 @@
 
 #include <switch.h>
 #include <SDL2/SDL.h>
+#include <string>
+#include <vector>
 
 #include "Scene.hpp"
 
@@ -31,17 +33,22 @@ namespace ChocolateDoomLauncher {
             static inline SDL_Window * window = NULL;
             static inline SDL_Renderer * renderer = NULL;
 
-            Application();
+            Application(int argc, char *argv[]);
             ~Application();
 
             int start(Scene * scene);
             void render();
+            std::string getPath();
+            bool hasArgument(std::string argument);
+            void closeRomFS();
 
             static void switchScene(Scene * scene);
         
         private:
+            std::string _path;
+            std::vector<std::string> _arguments;
             bool _initialized = false;
-            u8 _initializedServices = 0;
+            u16 _initializedServices = 0;
             u64 _nowTime;
             u64 _lastTime;
 

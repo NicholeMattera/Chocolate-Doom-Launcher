@@ -17,7 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <algorithm>
 #include <curl/curl.h>
+#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -28,8 +30,14 @@
 #include "Managers/Font.hpp"
 
 namespace ChocolateDoomLauncher {
-    Application::Application() {
+    Application::Application(int argc, char *argv[]) {
         currentApplication = this;
+
+        // Handle Arguments.
+        _path = (argc > 0) ? argv[0] : "";
+        for (int i = 1; i < argc; i++) {
+            _arguments.push_back(argv[i]);
+        }
 
         Result rc;
 
@@ -160,6 +168,21 @@ namespace ChocolateDoomLauncher {
 
         // Present our frame.
         SDL_RenderPresent(renderer);
+    }
+
+    std::string Application::getPath() {
+        return _path;
+    }
+
+    bool Application::hasArgument(std::string argument) {
+        return std::find(_arguments.begin(), _arguments.end(), argument) != _arguments.end();
+    }
+
+    void Application::closeRomFS() {
+        if (_initializedServices & ROMFS_SERVICE) {
+            romfsExit();
+            _initializedServices ^= ROMFS_SERVICE;
+        }
     }
 
     void Application::switchScene(Scene * scene) {

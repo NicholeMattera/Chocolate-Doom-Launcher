@@ -18,23 +18,16 @@
  */
 
 #include <string>
-#include <vector>
 
 #pragma once
 
 namespace ChocolateDoomLauncher::Services {
-    class File {
+    class Version {
         public:
-            static std::string currentWorkingDirectory();
-            static bool directoryExists(std::string path);
-            static bool createDirectories(std::string path);
-            static std::string sanitizeDirectoryName(std::string name);
-
-            static bool deleteFile(std::string path);
-            static bool fileExists(std::string path);
-            static std::vector<std::string> filenamesInDirectory(std::string path);
-
-        private:
+            static std::string getCurrentVersion();
+            static std::string getVersionOfApp(std::string path);
+            static std::string sanitizeVersion(std::string version);
+            static bool isNewerVersion(std::string currentVersion, std::string remoteVersion);
 
     };
 }

@@ -24,8 +24,8 @@
 #include "Services/File.hpp"
 #include "Services/Web.hpp"
 
-int main() {
-    auto * app = new ChocolateDoomLauncher::Application();
+int main(int argc, char *argv[]) {
+    auto * app = new ChocolateDoomLauncher::Application(argc, argv);
 
     // Make sure our folder structure is in place.
     if (!ChocolateDoomLauncher::Services::File::directoryExists("./dehs")) {
@@ -36,13 +36,17 @@ int main() {
         ChocolateDoomLauncher::Services::File::createDirectories("./mods");
     }
 
+    if (!ChocolateDoomLauncher::Services::File::directoryExists("./savegames")) {
+        ChocolateDoomLauncher::Services::File::createDirectories("./savegames");
+    }
+
     if (!ChocolateDoomLauncher::Services::File::directoryExists("./wads")) {
         ChocolateDoomLauncher::Services::File::createDirectories("./wads");
     }
 
     // Start our first scene.
     int val;
-    if (ChocolateDoomLauncher::Services::Web::hasInternetConnection()) {
+    if (!app->hasArgument("-do-not-update") && ChocolateDoomLauncher::Services::Web::hasInternetConnection()) {
         val = app->start(new ChocolateDoomLauncher::Scenes::Update());
     } else {
         // Check if Chocolate Doom exists.
