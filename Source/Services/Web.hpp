@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <curl/curl.h>
 #include <functional>
 #include <string>
 #include <vector>
@@ -32,6 +33,9 @@ namespace ChocolateDoomLauncher::Services {
             static bool hasInternetConnection();
 
         private:
+            static std::vector<char> _makeRequest(std::string url, std::function<void(double)> onProgressChanged);
+            static size_t _write(const char * in, size_t size, size_t num, std::vector<char> * buffer);
+            static size_t _progress(std::function<void(double)> * onProgressChanged, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
 
     };
 }

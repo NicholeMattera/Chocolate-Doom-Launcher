@@ -23,16 +23,33 @@
 
 namespace ChocolateDoomLauncher::Services {
     std::string Web::getLatestVersion(std::string user, std::string repo, std::function<void(double)> onProgressChanged) {
-        return "";
+        std::vector<char> data = _makeRequest(
+            "https://kosmos-builder.teamatlasnx.com/github/" + user + "/" + repo + "/version",
+            onProgressChanged
+        );
+
+        if (data.size() == 0) {
+            return NULL;
+        }
+
+        return std::string(data.begin(), data.end());
     }
 
     std::string Web::getLatestReleaseURL(std::string user, std::string repo, std::string pattern, std::function<void(double)> onProgressChanged) {
-        return "";
+        std::vector<char> data = _makeRequest(
+            "https://kosmos-builder.teamatlasnx.com/github/" + user + "/" + repo + "/release?pattern=" + pattern,
+            onProgressChanged
+        );
+
+        if (data.size() == 0) {
+            return NULL;
+        }
+
+        return std::string(data.begin(), data.end());
     }
 
     std::vector<char> Web::downloadFile(std::string url, std::function<void(double)> onProgressChanged) {
-        std::vector<char> result;
-        return result;
+        return _makeRequest(url, onProgressChanged);
     }
 
     bool Web::hasInternetConnection() {
@@ -48,5 +65,54 @@ namespace ChocolateDoomLauncher::Services {
             (connectionType == NifmInternetConnectionType_Ethernet && connectionStatus == NifmInternetConnectionStatus_Connected) || 
             (connectionType == NifmInternetConnectionType_WiFi && wifiStrength > 0)
         );
+    }
+
+    std::vector<char> Web::_makeRequest(std::string url, std::function<void(double)> onProgressChanged) {
+        std::vector<char> buffer;
+
+        CURL * curl = curl_easy_init();
+        if (!curl) {
+            return buffer;
+        }
+
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _write);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &buffer);
+        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+        curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, _progress);
+        curl_easy_setopt(curl, CURLOPT_XFERINFODATA, (void *) &onProgressChanged);
+
+        CURLcode res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            curl_easy_cleanup(curl);
+            buffer.clear();
+            return buffer;
+        }
+
+        curl_easy_cleanup(curl);
+
+        return buffer;
+    }
+
+    size_t Web::_write(const char * in, size_t size, size_t num, std::vector<char> * buffer) {
+        size_t i = 0;
+        while (i < size * num) {
+            buffer->push_back(*in);
+            ++in;
+            i++;
+        }
+
+        return i;
+    }
+
+    size_t Web::_progress(std::function<void(double)> * onProgressChanged, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
+        if (onProgressChanged != NULL) {
+            auto progress = (double) dlnow / (double) dltotal;
+            (*onProgressChanged)(progress);
+        }
+
+        return 0;
     }
 }

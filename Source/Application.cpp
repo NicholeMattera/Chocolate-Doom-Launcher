@@ -17,10 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <switch.h>
+#include <curl/curl.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <switch.h>
 
 #include "Application.hpp"
 #include "Constants.hpp"
@@ -31,20 +32,24 @@ namespace ChocolateDoomLauncher {
         currentApplication = this;
 
         Result rc;
-        
-        #ifdef DEBUG
-            nxlinkStdio();
-        #endif
 
         rc = socketInitializeDefault();
         if (R_FAILED(rc))
             return;
         _initializedServices |= SOCKET_SERVICE;
+        
+        #ifdef DEBUG
+            nxlinkStdio();
+        #endif
 
         rc = nifmInitialize(NifmServiceType_User);
         if (R_FAILED(rc))
             return;
         _initializedServices |= NIFM_SERVICE;
+
+        if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK)
+            return;
+        _initializedServices |= CURL_SERVICE;
 
         rc = romfsInit();
         if (R_FAILED(rc))
@@ -107,6 +112,9 @@ namespace ChocolateDoomLauncher {
 
         if (_initializedServices & ROMFS_SERVICE)
             romfsExit();
+
+        if (_initializedServices & CURL_SERVICE)
+            curl_global_cleanup();
 
         if (_initializedServices & NIFM_SERVICE)
             nifmExit();

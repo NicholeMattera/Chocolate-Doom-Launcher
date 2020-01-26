@@ -61,8 +61,9 @@ CXXFLAGS	:=	$(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
 ASFLAGS		:=	-g $(ARCH)
 LDFLAGS		=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS		:=	-lSimpleIniParser -lSDL2_ttf -lSDL2_image -lSDL2_gfx -lwebp -lpng -ljpeg -lnx \
-				`sdl2-config --libs` `freetype-config --libs`
+LIBS		:=	-lSimpleIniParser -lSDL2_ttf -lSDL2_image -lSDL2_gfx -lwebp -lpng -ljpeg -lcurl \
+				-lz -lmbedtls -lmbedx509 -lmbedcrypto -lnx `sdl2-config --libs` \
+				`freetype-config --libs`
 
 ifneq ($(shell which ccache),)
 	CXX		:=	$(shell which ccache) $(CXX)
