@@ -22,14 +22,13 @@
 #include "Error.hpp"
 #include "../Application.hpp"
 #include "../Managers/Font.hpp"
-#include "../Managers/Theme.hpp"
+#include "../Services/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
     Error::Error(std::string errorMessage) {
-        auto tm = Managers::Theme::Instance();
         auto fm = Managers::Font::Instance();
 
-        background = tm->background;
+        background = Services::Theme::background;
 
         auto backgroundSurface = IMG_Load("romfs:/Background.png");
         _backgroundTexture = SDL_CreateTextureFromSurface(Application::renderer, backgroundSurface);
@@ -43,7 +42,7 @@ namespace ChocolateDoomLauncher::Scenes {
         _header->frame = { 0, 0, 1280, 88 };
         addSubView(_header);
 
-        _error = new Views::Text(fm->getFont(StandardFont, 23), errorMessage, tm->text);
+        _error = new Views::Text(fm->getFont(StandardFont, 23), errorMessage, Services::Theme::text);
         _error->frame = { 0, 320, 1280, 70 };
         _error->textAlignment = CENTER_ALIGN;
         addSubView(_error);

@@ -22,13 +22,12 @@
 #include "Header.hpp"
 #include "../Application.hpp"
 #include "../Constants.hpp"
-#include "../Managers/Theme.hpp"
 #include "../Managers/Font.hpp"
+#include "../Services/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Views {
     Header::Header(std::string title, bool showIcon) {
         auto fm = Managers::Font::Instance();
-        auto tm = Managers::Theme::Instance();
 
         this->background = { 0, 0, 0, 0 };
 
@@ -48,7 +47,7 @@ namespace ChocolateDoomLauncher::Views {
             addSubView(_iconImage);
         }
 
-        _titleText = new Text(fm->getFont(StandardFont, 28), title, tm->text);
+        _titleText = new Text(fm->getFont(StandardFont, 28), title, Services::Theme::text);
         _titleText->frame = {
             (showIcon) ? 132 : 74,
             36,
@@ -91,10 +90,8 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     void Header::onRender(SDL_Rect rect, double dTime) {
-        auto tm = Managers::Theme::Instance();
-
         // Divider
-        auto divider = tm->header_footer_divider;
+        auto divider = Services::Theme::header_footer_divider;
         SDL_SetRenderDrawColor(Application::renderer, divider.r, divider.g, divider.b, divider.a);
         SDL_RenderDrawLine(Application::renderer, 30, rect.y + rect.h - 1, rect.x + rect.w - 30, rect.y + rect.h - 1);
     }

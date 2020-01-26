@@ -25,15 +25,13 @@
 #include "../Application.hpp"
 #include "../Constants.hpp"
 #include "../Models/FooterAction.hpp"
-#include "../Managers/Theme.hpp"
 #include "../Services/Doom.hpp"
 #include "../Services/File.hpp"
+#include "../Services/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
     GameSelection::GameSelection() {
-        auto tm = Managers::Theme::Instance();
-
-        background = tm->background;
+        background = Services::Theme::background;
         _games = Services::Doom::getGames();
 
         auto backgroundSurface = IMG_Load("romfs:/Background.png");

@@ -21,7 +21,7 @@
 #include "../Application.hpp"
 #include "../Constants.hpp"
 #include "../Managers/Font.hpp"
-#include "../Managers/Theme.hpp"
+#include "../Services/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Views {
     Footer::Footer() {
@@ -44,7 +44,6 @@ namespace ChocolateDoomLauncher::Views {
 
     void Footer::addAction(Models::FooterAction * action) {
         auto fm = Managers::Font::Instance();
-        auto tm = Managers::Theme::Instance();
 
         if (action->buttonTexture == NULL) {
             Uint16 button;
@@ -67,13 +66,13 @@ namespace ChocolateDoomLauncher::Views {
                     break;
             }
 
-            auto buttonSurface = TTF_RenderGlyph_Blended(fm->getFont(NintendoExtFont, 25), button, tm->text);
+            auto buttonSurface = TTF_RenderGlyph_Blended(fm->getFont(NintendoExtFont, 25), button, Services::Theme::text);
             action->buttonTexture = SDL_CreateTextureFromSurface(Application::renderer, buttonSurface);
             SDL_FreeSurface(buttonSurface);
         }
 
         if (action->textTexture == NULL) {
-            auto textSurface = TTF_RenderText_Blended(fm->getFont(StandardFont, 23), action->text.c_str(), tm->text);
+            auto textSurface = TTF_RenderText_Blended(fm->getFont(StandardFont, 23), action->text.c_str(), Services::Theme::text);
             action->textTexture = SDL_CreateTextureFromSurface(Application::renderer, textSurface);
             action->textWidth = textSurface->w;
             action->textHeight = textSurface->h;
@@ -85,10 +84,8 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     void Footer::onRender(SDL_Rect rect, double dTime) {
-        auto tm = Managers::Theme::Instance();
-
         // Divider
-        auto divider = tm->header_footer_divider;
+        auto divider = Services::Theme::header_footer_divider;
         SDL_SetRenderDrawColor(Application::renderer, divider.r, divider.g, divider.b, divider.a);
         SDL_RenderDrawLine(Application::renderer, rect.x + 30, rect.y, rect.w - 30, rect.y);
 

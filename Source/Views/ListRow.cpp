@@ -22,14 +22,13 @@
 #include "ListRow.hpp"
 #include "../Application.hpp"
 #include "../Managers/Font.hpp"
-#include "../Managers/Theme.hpp"
+#include "../Services/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Views {
     ListRow::ListRow(ListRowStyle style) {
-        auto tm = Managers::Theme::Instance();
         auto fm = Managers::Font::Instance();
 
-        _primaryText = new Text(fm->getFont(StandardFont, 23), "", tm->text);
+        _primaryText = new Text(fm->getFont(StandardFont, 23), "", Services::Theme::text);
         if (style != SUBTITLE) {
             _primaryText->frame = { 20, 23, 840, 24 };
         } else {
@@ -39,9 +38,9 @@ namespace ChocolateDoomLauncher::Views {
 
         if (style != DEFAULT) {
             if (style == BOOLEAN) {
-                _secondaryText = new Text(fm->getFont(StandardFont, 18), "Off", tm->disabled_text);
+                _secondaryText = new Text(fm->getFont(StandardFont, 18), "Off", Services::Theme::disabled_text);
             } else {
-                _secondaryText = new Text(fm->getFont(StandardFont, 18), "", (style == SUBTITLE) ? tm->disabled_text : tm->active_text);
+                _secondaryText = new Text(fm->getFont(StandardFont, 18), "", (style == SUBTITLE) ? Services::Theme::disabled_text : Services::Theme::active_text);
             }
 
             if (style != SUBTITLE) {
@@ -67,11 +66,9 @@ namespace ChocolateDoomLauncher::Views {
     }
 
     void ListRow::onRender(SDL_Rect rect, double dTime) {
-        auto tm = Managers::Theme::Instance();
-
         if (index != 0) {
             // Divider
-            auto divider = tm->list_divider;
+            auto divider = Services::Theme::list_divider;
             SDL_SetRenderDrawColor(Application::renderer, divider.r, divider.g, divider.b, divider.a);
             SDL_RenderDrawLine(Application::renderer, rect.x + 5, 0, rect.x + rect.w - 10, 0);
         }

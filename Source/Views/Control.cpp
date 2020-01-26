@@ -21,14 +21,12 @@
 
 #include "Control.hpp"
 #include "../Application.hpp"
-#include "../Managers/Theme.hpp"
+#include "../Services/Theme.hpp"
 
 namespace ChocolateDoomLauncher::Views {
     Control::Control() {
-        auto tm = Managers::Theme::Instance();
-
-        _firstColor = tm->selected_border_1;
-        _secondColor = tm->selected_border_2;
+        _firstColor = Services::Theme::selected_border_1;
+        _secondColor = Services::Theme::selected_border_2;
     }
     
     void Control::onTick(SDL_Rect rect, double dTime) {

@@ -17,25 +17,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "Theme.hpp"
+#include <SDL2/SDL.h>
+#include <string>
+#include <switch.h>
 
-namespace ChocolateDoomLauncher::Managers {
-    Theme * Theme::Instance() {
-        if (_instance == NULL) {
-            _instance = new Theme;
-        }
+#pragma once
 
-        return _instance;
-    }
+namespace ChocolateDoomLauncher::Services {
+    class Theme {
+        public:
+            static inline SDL_Color background = { 0, 0, 0, 255 };
+            static inline SDL_Color header_footer_divider = { 255, 255, 255, 255 };
+            static inline SDL_Color list_divider = { 77, 77, 77, 255 };
+            static inline SDL_Color selected_border_1 = { 255, 0, 0, 255 };
+            static inline SDL_Color selected_border_2 = { 64, 0, 0, 255 };
+            static inline SDL_Color text = { 255, 255, 255, 255 };
+            static inline SDL_Color active_text = { 255, 0, 0, 255 };
+            static inline SDL_Color disabled_text = { 64, 0, 0, 255 };
 
-    Theme::Theme() {
-        background = { 0, 0, 0, 255 };
-        header_footer_divider = { 255, 255, 255, 255 };
-        list_divider = { 77, 77, 77, 255 };
-        selected_border_1 = { 255, 0, 0, 255 };
-        selected_border_2 = { 67, 0, 0, 255 };
-        text = { 255, 255, 255, 255 };
-        active_text = { 0, 255, 196, 255 };
-        disabled_text = { 128, 128, 128, 255 };
-    }
+    };
 }
