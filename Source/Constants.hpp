@@ -44,7 +44,9 @@ namespace ChocolateDoomLauncher {
         SDL_SERVICE = BIT(3),
         SDL_IMG_SERVICE = BIT(4),
         SDL_TTF_SERVICE = BIT(5),
-        SET_SERVICE = BIT(6)
+        SET_SERVICE = BIT(6),
+        SOCKET_SERVICE = BIT(7),
+        NIFM_SERVICE = BIT(8),
     } SystemServices;
 
     typedef enum {

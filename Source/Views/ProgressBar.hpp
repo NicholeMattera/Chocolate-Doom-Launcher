@@ -17,35 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <list>
-#include <switch.h>
+#include <SDL2/SDL.h>
 
-#include "Constants.hpp"
-#include "View.hpp"
+#include "../Constants.hpp"
+#include "../View.hpp"
 
 #pragma once
 
-namespace ChocolateDoomLauncher {
-    class Scene {
+namespace ChocolateDoomLauncher::Views {
+    class ProgressBar : public View {
         public:
-            SDL_Color background = { 0, 0, 0, 255 };
-            u8 enabledEvents = BUTTON_DOWN_EVENT;
-            std::list<View *> subviews;
+            void onRender(SDL_Rect rect, double dTime);
 
-            Scene(){};
-            virtual ~Scene(){};
-
-            virtual void buttonsHeld(u32 buttons, double dTime){};
-            virtual void buttonsDown(u32 buttons, double dTime){};
-            virtual void buttonsUp(u32 buttons, double dTime){};
-            
-            virtual void tick(SDL_Rect rect, double dTime){};
-            virtual void render(SDL_Rect rect, double dTime);
-
-            void addSubView(View * view);
-            void removeSubView(View * view);
+            void setProgress(double progress);
 
         private:
+            double _progress = 0;
         
     };
 }

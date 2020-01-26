@@ -33,9 +33,18 @@ namespace ChocolateDoomLauncher {
         Result rc;
         
         #ifdef DEBUG
-            socketInitializeDefault();
             nxlinkStdio();
         #endif
+
+        rc = socketInitializeDefault();
+        if (R_FAILED(rc))
+            return;
+        _initializedServices |= SOCKET_SERVICE;
+
+        rc = nifmInitialize(NifmServiceType_User);
+        if (R_FAILED(rc))
+            return;
+        _initializedServices |= NIFM_SERVICE;
 
         rc = romfsInit();
         if (R_FAILED(rc))
@@ -99,9 +108,11 @@ namespace ChocolateDoomLauncher {
         if (_initializedServices & ROMFS_SERVICE)
             romfsExit();
 
-        #ifdef DEBUG
+        if (_initializedServices & NIFM_SERVICE)
+            nifmExit();
+
+        if (_initializedServices & SOCKET_SERVICE)
             socketExit();
-        #endif
     }
 
     int Application::start(Scene * scene) {
@@ -123,6 +134,7 @@ namespace ChocolateDoomLauncher {
                 break;
 
             _render(dTime);
+            _currentScene->tick({ 0, 0, 1280, 720 }, dTime);
 
             if (_handlePossibleSceneChange())
                 break;

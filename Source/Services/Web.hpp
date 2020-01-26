@@ -17,35 +17,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <list>
-#include <switch.h>
-
-#include "Constants.hpp"
-#include "View.hpp"
+#include <functional>
+#include <string>
+#include <vector>
 
 #pragma once
 
-namespace ChocolateDoomLauncher {
-    class Scene {
+namespace ChocolateDoomLauncher::Services {
+    class Web {
         public:
-            SDL_Color background = { 0, 0, 0, 255 };
-            u8 enabledEvents = BUTTON_DOWN_EVENT;
-            std::list<View *> subviews;
-
-            Scene(){};
-            virtual ~Scene(){};
-
-            virtual void buttonsHeld(u32 buttons, double dTime){};
-            virtual void buttonsDown(u32 buttons, double dTime){};
-            virtual void buttonsUp(u32 buttons, double dTime){};
-            
-            virtual void tick(SDL_Rect rect, double dTime){};
-            virtual void render(SDL_Rect rect, double dTime);
-
-            void addSubView(View * view);
-            void removeSubView(View * view);
+            static std::string getLatestVersion(std::string user, std::string repo, std::function<void(double)> onProgressChanged);
+            static std::string getLatestReleaseURL(std::string user, std::string repo, std::string pattern, std::function<void(double)> onProgressChanged);
+            static std::vector<char> downloadFile(std::string url, std::function<void(double)> onProgressChanged);
+            static bool hasInternetConnection();
 
         private:
-        
+
     };
 }

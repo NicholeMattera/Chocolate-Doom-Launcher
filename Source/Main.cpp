@@ -20,7 +20,9 @@
 #include "Application.hpp"
 #include "Scenes/Error.hpp"
 #include "Scenes/GameSelection.hpp"
+#include "Scenes/Update.hpp"
 #include "Services/File.hpp"
+#include "Services/Web.hpp"
 
 int main() {
     auto * app = new ChocolateDoomLauncher::Application();
@@ -38,15 +40,19 @@ int main() {
         ChocolateDoomLauncher::Services::File::createDirectories("./wads");
     }
 
-    // Check if Chocolate Doom exists.
-    auto exists = ChocolateDoomLauncher::Services::File::fileExists("./doom.nro");
-
     // Start our first scene.
     int val;
-    if (exists) {
-        val = app->start(new ChocolateDoomLauncher::Scenes::GameSelection());
+    if (ChocolateDoomLauncher::Services::Web::hasInternetConnection()) {
+        val = app->start(new ChocolateDoomLauncher::Scenes::Update());
     } else {
-        val = app->start(new ChocolateDoomLauncher::Scenes::Error("Chocolate Doom is missing, please download Chocolate Doom and install it into:\n \n" + ChocolateDoomLauncher::Services::File::currentWorkingDirectory()));
+        // Check if Chocolate Doom exists.
+        auto exists = ChocolateDoomLauncher::Services::File::fileExists("./doom.nro");
+
+        if (exists) {
+            val = app->start(new ChocolateDoomLauncher::Scenes::GameSelection());
+        } else {
+            val = app->start(new ChocolateDoomLauncher::Scenes::Error("Chocolate Doom NX is missing, please download Chocolate Doom NX and install it into:\n \n" + ChocolateDoomLauncher::Services::File::currentWorkingDirectory()));
+        }
     }
 
     // Clean up.
