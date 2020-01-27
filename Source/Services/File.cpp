@@ -19,7 +19,9 @@
 
 #include <dirent.h>
 #include <iostream>
+#include <fstream>
 #include <limits.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/unistd.h>
@@ -27,6 +29,41 @@
 #include "File.hpp"
 
 namespace ChocolateDoomLauncher::Services {
+    void File::initialSetup() {
+        // Make sure our folder structure is in place.
+        if (!directoryExists("./dehs"))
+            createDirectories("./dehs");
+
+        if (!directoryExists("./mods"))
+            createDirectories("./mods");
+
+        if (!directoryExists("./savegames"))
+            createDirectories("./savegames");
+
+        if (!directoryExists("./wads"))
+            createDirectories("./wads");
+
+        if (!fileExists("./chocolate-doom.cfg"))
+            copyFile("romfs:/chocolate-doom.cfg", "./chocolate-doom.cfg");
+
+        if (!fileExists("./default.cfg"))
+            copyFile("romfs:/default.cfg", "./default.cfg");
+
+        // I messed up with 1.0.0 and Chocolate Doom NX had the root SD as 
+        //  the current working directory. Lets clean up our mess.
+        if (directoryExists("sdmc:/savegames")) {
+            recursiveMove("sdmc:/savegames", "./savegames");
+        }
+
+        if (fileExists("sdmc:/chocolate-doom.cfg")) {
+            deleteFile("sdmc:/chocolate-doom.cfg");
+        }
+
+        if (fileExists("sdmc:/default.cfg")) {
+            deleteFile("sdmc:/default.cfg");
+        }
+    }
+    
     std::string File::currentWorkingDirectory() {
         char path[PATH_MAX];
         getcwd(path, PATH_MAX);
@@ -90,6 +127,25 @@ namespace ChocolateDoomLauncher::Services {
         return result;
     }
 
+    bool File::copyFile(std::string source, std::string destination) {
+        std::ifstream sourceStream(source, std::ios::binary);
+        if (!sourceStream.is_open())
+            return false;
+
+        std::ofstream destinationStream(destination, std::ios::binary);
+        if (!destinationStream.is_open())
+            return false;
+
+        destinationStream << sourceStream.rdbuf();
+
+        sourceStream.close();
+
+        destinationStream.flush();
+        destinationStream.close();
+
+        return true;
+    }
+
     bool File::deleteFile(std::string path) {
         if (fileExists(path)) {
             return remove(path.c_str()) == 0;
@@ -119,5 +175,31 @@ namespace ChocolateDoomLauncher::Services {
         }
 
         return files;
+    }
+
+    void File::recursiveMove(std::string source, std::string destination) {
+        struct stat info;
+        stat(source.c_str(), &info);
+
+        if (S_ISDIR(info.st_mode)) {
+            if (!directoryExists(destination)) {
+                createDirectories(destination);
+            }
+            
+            auto directory = opendir(source.c_str());
+            struct dirent * entry;
+            while ((entry = readdir(directory)) != NULL) {
+                if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, "..")) {
+                    continue;
+                }
+
+                recursiveMove(source + "/" + entry->d_name, destination + "/" + entry->d_name);
+            }
+
+            closedir(directory);
+            rmdir(source.c_str());
+        } else {
+            rename(source.c_str(), destination.c_str());
+        }
     }
 }

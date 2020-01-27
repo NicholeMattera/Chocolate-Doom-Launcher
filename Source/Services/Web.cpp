@@ -76,6 +76,10 @@ namespace ChocolateDoomLauncher::Services {
 
         if (!path.empty()) {
             file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
+            if (!file.is_open()) {
+                buffer.push_back('0');
+                return buffer;
+            }
         }
 
         CURL * curl = curl_easy_init();

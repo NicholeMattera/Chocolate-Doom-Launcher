@@ -44,7 +44,7 @@ ROMFS		:=	RomFS
 
 APP_TITLE	:=	Chocolate Doom Launcher
 APP_AUTHOR	:=	Nichole Mattera (Port: MVG)
-APP_VERSION	:=	1.0.0
+APP_VERSION	:=	1.1.0
 
 #---------------------------------------------------------------------------------
 # options for code generation

@@ -43,6 +43,7 @@ namespace ChocolateDoomLauncher::Scenes {
         private:
             SDL_Texture * _backgroundTexture = NULL;
             std::vector<Models::Game> _games;
+            bool _canUpdate = false;
 
             Views::Image * _background = NULL;
             Views::Header * _header = NULL;

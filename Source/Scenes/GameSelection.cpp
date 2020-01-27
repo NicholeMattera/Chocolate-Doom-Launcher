@@ -22,12 +22,14 @@
 
 #include "Error.hpp"
 #include "GameSelection.hpp"
+#include "Update.hpp"
 #include "../Application.hpp"
 #include "../Constants.hpp"
 #include "../Models/FooterAction.hpp"
 #include "../Services/Doom.hpp"
 #include "../Services/File.hpp"
 #include "../Services/Theme.hpp"
+#include "../Services/Web.hpp"
 
 namespace ChocolateDoomLauncher::Scenes {
     GameSelection::GameSelection() {
@@ -42,7 +44,7 @@ namespace ChocolateDoomLauncher::Scenes {
         _background->frame = { 0, 0, 1280, 720 };
         addSubView(_background);
 
-        _header = new Views::Header("Choose a game", true);
+        _header = new Views::Header("Choose a Game", true);
         _header->frame = { 0, 0, 1280, 88 };
         addSubView(_header);
 
@@ -58,8 +60,17 @@ namespace ChocolateDoomLauncher::Scenes {
 
         auto openIWADAction = new Models::FooterAction();
         openIWADAction->button = A_BUTTON;
-        openIWADAction->text = "Start game";
+        openIWADAction->text = "Start Game";
         _footer->addAction(openIWADAction);
+
+        if (Services::Web::hasInternetConnection()) {
+            _canUpdate = true;
+
+            auto updateAction = new Models::FooterAction();
+            updateAction->button = Y_BUTTON;
+            updateAction->text = "Check for Updates";
+            _footer->addAction(updateAction);
+        }
 
         auto quitAction = new Models::FooterAction();
         quitAction->button = B_BUTTON;
@@ -101,6 +112,9 @@ namespace ChocolateDoomLauncher::Scenes {
             if (_games.size() != 0 && !Services::Doom::loadDoom(_games.at(_list->getSelectedRowIndex()))) {
                 Application::switchScene(new Error("Unable to start Chocolate Doom."));
             }
+        }
+        else if (buttons & KEY_Y && _canUpdate) {
+            Application::switchScene(new Update());
         }
         else if (buttons & KEY_B) {
             Application::switchScene(NULL);

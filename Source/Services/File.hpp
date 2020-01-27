@@ -25,16 +25,19 @@
 namespace ChocolateDoomLauncher::Services {
     class File {
         public:
+            static void initialSetup();
+
             static std::string currentWorkingDirectory();
             static bool directoryExists(std::string path);
             static bool createDirectories(std::string path);
             static std::string sanitizeDirectoryName(std::string name);
 
+            static bool copyFile(std::string source, std::string destination);
             static bool deleteFile(std::string path);
             static bool fileExists(std::string path);
             static std::vector<std::string> filenamesInDirectory(std::string path);
 
-        private:
+            static void recursiveMove(std::string source, std::string destination);
 
     };
 }

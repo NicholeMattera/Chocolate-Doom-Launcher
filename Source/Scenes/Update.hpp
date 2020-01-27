@@ -34,7 +34,6 @@ namespace ChocolateDoomLauncher::Scenes {
             Update();
             ~Update();
             void tick(SDL_Rect rect, double dTime);
-            void buttonsDown(u32 buttons, double dTime);
 
         private:
             SDL_Texture * _backgroundTexture = NULL;

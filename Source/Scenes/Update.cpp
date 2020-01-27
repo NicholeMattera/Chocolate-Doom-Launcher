@@ -42,7 +42,7 @@ namespace ChocolateDoomLauncher::Scenes {
         _background->frame = { 0, 0, 1280, 720 };
         addSubView(_background);
 
-        _header = new Views::Header("Chocolate Doom Launcher", true);
+        _header = new Views::Header("Checking for Updates", true);
         _header->frame = { 0, 0, 1280, 88 };
         addSubView(_header);
 
@@ -58,8 +58,6 @@ namespace ChocolateDoomLauncher::Scenes {
         _footer = new Views::Footer();
         _footer->frame = { 0, 647, 1280, 73 };
         addSubView(_footer);
-
-        
     }
 
     Update::~Update() {
@@ -90,9 +88,9 @@ namespace ChocolateDoomLauncher::Scenes {
             if (!restartRequired) {
                 Application::switchScene(new Scenes::GameSelection());
             } else {
+                // Need to restart the launcher if it was updated.
                 auto path = Application::currentApplication->getPath();
-                auto args = path + " -do-not-update";
-                envSetNextLoad(path.c_str(), args.c_str());
+                envSetNextLoad(path.c_str(), path.c_str());
                 Application::switchScene(NULL);
             }
 
@@ -100,20 +98,17 @@ namespace ChocolateDoomLauncher::Scenes {
         }
     }
 
-    void Update::buttonsDown(u32 buttons, double dTime) {
-        
-    }
-
     bool Update::_updateLauncher() {
         Application::currentApplication->render();
 
+        // Get the latest version from the server.
         auto latestVersion = Services::Web::getLatestVersion(
             "NicholeMattera",
             "Chocolate-Doom-Launcher",
             std::bind(&Update::_onProgressUpdate, this, std::placeholders::_1)
         );
 
-        // If there isn't a newer version
+        // Bail out if there isn't a newer version.
         if (!Services::Version::isNewerVersion(Services::Version::getCurrentVersion(), Services::Version::sanitizeVersion(latestVersion))) {
             return false;
         }
@@ -121,6 +116,7 @@ namespace ChocolateDoomLauncher::Scenes {
         _text->setText("Getting latest release of Chocolate Doom Launcher...");
         Application::currentApplication->render();
 
+        // Get the latest release URL from the server.
         auto latestReleaseURL = Services::Web::getLatestReleaseURL(
             "NicholeMattera",
             "Chocolate-Doom-Launcher",
@@ -132,6 +128,7 @@ namespace ChocolateDoomLauncher::Scenes {
         Application::currentApplication->render();
         Application::currentApplication->closeRomFS();
 
+        // Download the latest release.
         std::string appPath = Application::currentApplication->getPath();
         auto launcher = Services::Web::downloadFile(
             latestReleaseURL,
@@ -139,6 +136,7 @@ namespace ChocolateDoomLauncher::Scenes {
             std::bind(&Update::_onProgressUpdate, this, std::placeholders::_1)
         );
 
+        // Overwrite the file if we were successful.
         if (launcher[0] == '1') {
             Services::File::deleteFile(appPath);
             rename((appPath + ".tmp").c_str(), appPath.c_str());
@@ -153,16 +151,19 @@ namespace ChocolateDoomLauncher::Scenes {
         auto doomExists = Services::File::fileExists("./doom.nro");
         auto newVersionAvailable = false;
 
+        // If for some reason we don't have it then just download the latest.
         if (doomExists) {
             _text->setText("Checking for updates of Chocolate Doom NX...");
             Application::currentApplication->render();
 
+            // Get the latest version from the server.
             auto latestVersion = Services::Web::getLatestVersion(
                 "NicholeMattera",
                 "chocolate-doom-nx",
                 std::bind(&Update::_onProgressUpdate, this, std::placeholders::_1)
             );
 
+            // Bail out if there isn't a newer version.
             newVersionAvailable = Services::Version::isNewerVersion(
                 Services::Version::getVersionOfApp("./doom.nro"),
                 Services::Version::sanitizeVersion(latestVersion)
@@ -174,6 +175,7 @@ namespace ChocolateDoomLauncher::Scenes {
             _text->setText("Getting latest release of Chocolate Doom NX...");
             Application::currentApplication->render();
 
+            // Get the latest release URL from the server.
             auto latestReleaseURL = Services::Web::getLatestReleaseURL(
                 "NicholeMattera",
                 "chocolate-doom-nx",
@@ -184,12 +186,15 @@ namespace ChocolateDoomLauncher::Scenes {
             _text->setText("Downloading latest release of Chocolate Doom NX...");
             Application::currentApplication->render();
 
+            // Download the latest release.
             auto game = Services::Web::downloadFile(
                 latestReleaseURL,
                 "./doom.nro.tmp",
                 std::bind(&Update::_onProgressUpdate, this, std::placeholders::_1)
             );
 
+
+            // Overwrite the file if we were successful.
             if (game[0] == '1') {
                 Services::File::deleteFile("./doom.nro");
                 rename("./doom.nro.tmp", "./doom.nro");

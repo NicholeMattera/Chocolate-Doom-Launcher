@@ -26,37 +26,14 @@
 
 int main(int argc, char *argv[]) {
     auto * app = new ChocolateDoomLauncher::Application(argc, argv);
-
-    // Make sure our folder structure is in place.
-    if (!ChocolateDoomLauncher::Services::File::directoryExists("./dehs")) {
-        ChocolateDoomLauncher::Services::File::createDirectories("./dehs");
-    }
-
-    if (!ChocolateDoomLauncher::Services::File::directoryExists("./mods")) {
-        ChocolateDoomLauncher::Services::File::createDirectories("./mods");
-    }
-
-    if (!ChocolateDoomLauncher::Services::File::directoryExists("./savegames")) {
-        ChocolateDoomLauncher::Services::File::createDirectories("./savegames");
-    }
-
-    if (!ChocolateDoomLauncher::Services::File::directoryExists("./wads")) {
-        ChocolateDoomLauncher::Services::File::createDirectories("./wads");
-    }
+    ChocolateDoomLauncher::Services::File::initialSetup();
 
     // Start our first scene.
     int val;
-    if (!app->hasArgument("-do-not-update") && ChocolateDoomLauncher::Services::Web::hasInternetConnection()) {
-        val = app->start(new ChocolateDoomLauncher::Scenes::Update());
+    if (ChocolateDoomLauncher::Services::File::fileExists("./doom.nro")) {
+        val = app->start(new ChocolateDoomLauncher::Scenes::GameSelection());
     } else {
-        // Check if Chocolate Doom exists.
-        auto exists = ChocolateDoomLauncher::Services::File::fileExists("./doom.nro");
-
-        if (exists) {
-            val = app->start(new ChocolateDoomLauncher::Scenes::GameSelection());
-        } else {
-            val = app->start(new ChocolateDoomLauncher::Scenes::Error("Chocolate Doom NX is missing, please download Chocolate Doom NX and install it into:\n \n" + ChocolateDoomLauncher::Services::File::currentWorkingDirectory()));
-        }
+        val = app->start(new ChocolateDoomLauncher::Scenes::Error("Chocolate Doom NX is missing, please download Chocolate Doom NX and install it into:\n \n" + ChocolateDoomLauncher::Services::File::currentWorkingDirectory()));
     }
 
     // Clean up.
