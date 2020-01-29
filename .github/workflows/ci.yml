@@ -42,3 +42,15 @@ jobs:
       env:
         DEVKITPRO: /opt/devkitpro
       run: make
+
+    - name: Upload NRO File
+      uses: actions/upload-artifact@v1
+      with:
+        name: ChocolateDoomLauncher
+        path: ChocolateDoomLauncher.nro
+
+    - name: Upload ELF File
+      uses: actions/upload-artifact@v1
+      with:
+        name: ELF File
+        path: ChocolateDoomLauncher.elf
