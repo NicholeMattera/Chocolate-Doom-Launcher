@@ -1,0 +1,14 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: devkitpro/devkita64
+    
+    steps:
+    - name: update
+      run: dkp-pacman -Syu --noconfirm
+    - name: build
+      run: make
