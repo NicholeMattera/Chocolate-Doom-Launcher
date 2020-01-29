@@ -32,8 +32,12 @@ jobs:
         sudo dkp-pacman -S --needed --noconfirm switch-curl switch-mbedtls switch-libjpeg-turbo switch-libpng switch-libwebp switch-sdl2 switch-sdl2_gfx switch-sdl2_image switch-sdl2_ttf switch-zlib
         sudo dkp-pacman -Scc --noconfirm
     
-    - uses: actions/checkout@v2
-    
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+      
+    - name: Checkout Submodules
+      uses: textbook/git-checkout-submodule-action@2.0.0
+      
     - name: Build
       env:
         DEVKITPRO: /opt/devkitpro
