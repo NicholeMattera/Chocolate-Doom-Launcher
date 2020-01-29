@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     // Start our first scene.
     int val;
-    if (ChocolateDoomLauncher::Services::File::fileExists("./doom.nro")) {
+    if (fileExists("./doom.nro")) {
         val = app->start(new ChocolateDoomLauncher::Scenes::GameSelection());
     } else {
         val = app->start(new ChocolateDoomLauncher::Scenes::Error("Chocolate Doom NX is missing, please download Chocolate Doom NX and install it into:\n \n" + ChocolateDoomLauncher::Services::File::currentWorkingDirectory()));
