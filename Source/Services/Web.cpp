@@ -17,6 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <jansson.h>
 #include <switch.h>
 
 #include "File.hpp"
@@ -25,7 +26,7 @@
 namespace ChocolateDoomLauncher::Services {
     std::string Web::getLatestVersion(std::string user, std::string repo, std::function<void(double)> onProgressChanged) {
         std::vector<char> data = _makeRequest(
-            "https://kosmos-builder.teamatlasnx.com/github/" + user + "/" + repo + "/version",
+            "https://api.github.com/repos/NicholeMattera/Chocolate-Doom-Launcher/releases",
             "",
             onProgressChanged
         );
@@ -34,12 +35,31 @@ namespace ChocolateDoomLauncher::Services {
             return NULL;
         }
 
-        return std::string(data.begin(), data.end());
+        std::string jsonData = std::string(data.begin(), data.end());
+        json_t * root = json_loads(jsonData.c_str(), 0, NULL);
+        if (!root || !json_is_array(root) || json_array_size(root) < 1) {
+            return NULL;
+        }
+
+        json_t * release = json_array_get(root, 0);
+        if (!release || !json_is_object(release)) {
+            return NULL;
+        }
+
+        json_t * tagName = json_object_get(release, "tag_name");
+        if (!tagName || !json_is_string(tagName)) {
+            return NULL;
+        }
+
+        std::string latestVersion(json_string_value(tagName));
+        json_decref(root);
+
+        return latestVersion;
     }
 
     std::string Web::getLatestReleaseURL(std::string user, std::string repo, std::string pattern, std::function<void(double)> onProgressChanged) {
         std::vector<char> data = _makeRequest(
-            "https://kosmos-builder.teamatlasnx.com/github/" + user + "/" + repo + "/release?pattern=" + pattern,
+            "https://api.github.com/repos/NicholeMattera/Chocolate-Doom-Launcher/releases",
             "",
             onProgressChanged
         );
@@ -48,7 +68,55 @@ namespace ChocolateDoomLauncher::Services {
             return NULL;
         }
 
-        return std::string(data.begin(), data.end());
+        std::string jsonData = std::string(data.begin(), data.end());
+        json_t * root = json_loads(jsonData.c_str(), 0, NULL);
+        if (!root || !json_is_array(root) || json_array_size(root) < 1) {
+            return NULL;
+        }
+
+        json_t * release = json_array_get(root, 0);
+        if (!release || !json_is_object(release)) {
+            return NULL;
+        }
+
+        json_t * assets = json_object_get(release, "assets");
+        if (!assets || !json_is_array(assets) || json_array_size(assets) < 1) {
+            return NULL;
+        }
+
+        std::string downloadUrl = "";
+        for(size_t i = 0; i < json_array_size(assets); i++) {
+            json_t * asset = json_array_get(assets, i);
+            if (!asset || !json_is_object(asset)) {
+                continue;
+            }
+
+            json_t * name = json_object_get(asset, "name");
+            if (!name || !json_is_string(name)) {
+                continue;
+            }
+
+            std::string assetName(json_string_value(name));
+            if (assetName.compare(assetName.length() - 4, 4, ".nro") != 0) {
+                continue;
+            }
+
+            json_t * browserDownloadUrl = json_object_get(asset, "browser_download_url");
+            if (!browserDownloadUrl || !json_is_string(browserDownloadUrl)) {
+                continue;
+            }
+
+            downloadUrl = std::string(json_string_value(browserDownloadUrl));
+            break;
+        }
+
+        json_decref(root);
+
+        if (downloadUrl.length() == 0) {
+            return NULL;
+        }
+
+        return downloadUrl;
     }
 
     std::vector<char> Web::downloadFile(std::string url, std::string path, std::function<void(double)> onProgressChanged) {
@@ -101,6 +169,7 @@ namespace ChocolateDoomLauncher::Services {
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "ChocolateDoomLauncher");
         if (!path.empty()) {
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _writeToFile);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &file);

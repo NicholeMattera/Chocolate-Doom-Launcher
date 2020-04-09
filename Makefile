@@ -44,7 +44,7 @@ ROMFS		:=	RomFS
 
 APP_TITLE	:=	Chocolate Doom Launcher
 APP_AUTHOR	:=	Nichole Mattera (Port: MVG)
-APP_VERSION	:=	1.1.0
+APP_VERSION	:=	1.1.1
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -62,7 +62,7 @@ ASFLAGS		:=	-g $(ARCH)
 LDFLAGS		=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS		:=	-lSimpleIniParser -lSDL2_ttf -lSDL2_image -lSDL2_gfx -lwebp -lpng -ljpeg -lcurl \
-				-lz -lmbedtls -lmbedx509 -lmbedcrypto -lnx `sdl2-config --libs` \
+				-lz -lmbedtls -lmbedx509 -lmbedcrypto -ljansson -lnx `sdl2-config --libs` \
 				`freetype-config --libs`
 
 ifneq ($(shell which ccache),)
