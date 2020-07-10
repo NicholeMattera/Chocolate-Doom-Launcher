@@ -26,7 +26,7 @@
 namespace ChocolateDoomLauncher::Services {
     std::string Web::getLatestVersion(std::string user, std::string repo, std::function<void(double)> onProgressChanged) {
         std::vector<char> data = _makeRequest(
-            "https://api.github.com/repos/NicholeMattera/Chocolate-Doom-Launcher/releases",
+            "https://git.nicholemattera.com/api/v1/repos/NicholeMattera/Chocolate-Doom-Launcher/releases",
             "",
             onProgressChanged
         );
@@ -59,7 +59,7 @@ namespace ChocolateDoomLauncher::Services {
 
     std::string Web::getLatestReleaseURL(std::string user, std::string repo, std::string pattern, std::function<void(double)> onProgressChanged) {
         std::vector<char> data = _makeRequest(
-            "https://api.github.com/repos/NicholeMattera/Chocolate-Doom-Launcher/releases",
+            "https://git.nicholemattera.com/api/v1/repos/NicholeMattera/Chocolate-Doom-Launcher/releases",
             "",
             onProgressChanged
         );
