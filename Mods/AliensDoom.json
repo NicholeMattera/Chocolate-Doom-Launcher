@@ -1,0 +1,14 @@
+{
+    "name": "Aliens Doom",
+    "iwad": "DOOM.WAD",
+    "deh": [
+        "AD3.DEH"
+    ],
+    "merge": [
+        "AD3SPFL.wad",
+        "AD3GFX.wad",
+        "AD3SND.wad",
+        "AD3MUS.wad",
+        "AD3LEV.wad"
+    ]
+}

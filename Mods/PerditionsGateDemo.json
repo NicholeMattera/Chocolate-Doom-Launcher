@@ -1,0 +1,7 @@
+{
+    "name": "Perdition's Gate Demo",
+    "iwad": "DOOM2.WAD",
+    "merge": [
+        "PG-LTD.WAD"
+    ]
+}

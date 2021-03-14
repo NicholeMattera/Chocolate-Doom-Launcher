@@ -1,0 +1,10 @@
+{
+    "name": "Zombies",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "ZOMBIE.DEH"
+    ],
+    "merge": [
+        "ZOMBIE.WAD"
+    ]
+}

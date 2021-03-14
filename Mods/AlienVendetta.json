@@ -1,0 +1,10 @@
+{
+    "name": "Aliens Vendetta",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "AV.DEH"
+    ],
+    "file": [
+        "AV.WAD"
+    ]
+}

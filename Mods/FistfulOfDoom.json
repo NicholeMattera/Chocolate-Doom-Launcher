@@ -1,0 +1,10 @@
+{
+    "name": "Fistful of Doom",
+    "iwad": "DOOM2.WAD",
+    "file": [
+        "FISTFIX.WAD"
+    ],
+    "merge": [
+        "FISTFUL.WAD"
+    ]
+}

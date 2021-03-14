@@ -39,12 +39,12 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	ChocolateDoomLauncher
 BUILD		:=	Build
-SOURCES		:=	Source Source/Managers Source/Models Source/Scenes Source/Services Source/Views
+SOURCES		:=	Source Source/Activities
 ROMFS		:=	RomFS
 
 APP_TITLE	:=	Chocolate Doom Launcher
 APP_AUTHOR	:=	Nichole Mattera (Port: MVG)
-APP_VERSION	:=	1.1.1
+APP_VERSION	:=	2.0.0
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -56,26 +56,21 @@ DEFINES		+=	-D__SWITCH__ -DVERSION=\"$(APP_VERSION)\"
 CFLAGS		:=	-g -Wall -O2 -ffunction-sections \
 				$(ARCH) $(DEFINES) $(INCLUDE)
 
-CXXFLAGS	:=	$(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++17
+CXXFLAGS	:=	$(CFLAGS) -std=c++1z
 
 ASFLAGS		:=	-g $(ARCH)
 LDFLAGS		=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS		:=	-lSimpleIniParser -lSDL2_ttf -lSDL2_image -lSDL2_gfx -lwebp -lpng -ljpeg -lcurl \
-				-lz -lmbedtls -lmbedx509 -lmbedcrypto -ljansson -lnx `sdl2-config --libs` \
-				`freetype-config --libs`
-
-ifneq ($(shell which ccache),)
-	CXX		:=	$(shell which ccache) $(CXX)
-	CC		:=	$(shell which ccache) $(CC)
-endif
+LIBS		:=	-ljansson -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/Simple-INI-Parser
+LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 
+BOREALIS_PATH	:=	./borealis
+include $(TOPDIR)/borealis/library/borealis.mk
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
@@ -170,11 +165,7 @@ endif
 all: $(BUILD)
 
 $(BUILD):
-ifeq ($(wildcard $(CURDIR)/SimpleIniParser/LICENSE),)
-	@$(error "Please run 'git submodule update --init' before running 'make'")
-endif
 	@[ -d $@ ] || mkdir -p $@
-	@$(MAKE) -C $(CURDIR)/SimpleIniParser -f $(CURDIR)/SimpleIniParser/Makefile
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
 #---------------------------------------------------------------------------------

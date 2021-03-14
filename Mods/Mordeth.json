@@ -1,0 +1,13 @@
+{
+    "name": "Mordeth",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "MORDETH.DEH"
+    ],
+    "file": [
+        "MORDETH.WAD"
+    ],
+    "aa": [
+        "MORGRAP0.WAD"
+    ]
+}

@@ -1,0 +1,11 @@
+{
+    "name": "Obituary",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "OBTIC2.DEH"
+    ],
+    "file": [
+        "OBTIC1.WAD",
+        "OBTIC2.WAD"
+    ]
+}

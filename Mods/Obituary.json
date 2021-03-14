@@ -1,0 +1,14 @@
+{
+    "name": "Obituary",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "OBTIC1.DEH"
+    ],
+    "file": [
+        "OBTIC1.WAD",
+        "OBTIC2.WAD"
+    ],
+    "nwtmerge": [
+        "OBTIC2.WAD"
+    ]
+}

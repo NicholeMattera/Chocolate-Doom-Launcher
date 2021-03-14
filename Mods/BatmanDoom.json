@@ -1,0 +1,12 @@
+{
+    "name": "Batman Doom",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "batman.deh",
+        "vbatman.deh",
+        "macmoltv.deh"
+    ],
+    "merge": [
+        "batman.wad"
+    ]
+}

@@ -1,0 +1,15 @@
+{
+    "name": "All Hell is Breaking Loose",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "allhell.deh"
+    ],
+    "file": [
+        "Ahlevels.wad",
+        "Ahmus.wad"
+    ],
+    "merge": [
+        "Allhell.wad",
+        "ahflats.wad"
+    ]
+}

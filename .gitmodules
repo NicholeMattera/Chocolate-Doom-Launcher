@@ -1,3 +1,3 @@
-[submodule "Simple-INI-Parser"]
-	path = Simple-INI-Parser
-	url = https://git.nicholemattera.com/NicholeMattera/Simple-INI-Parser.git
+[submodule "borealis"]
+	path = borealis
+	url = https://github.com/natinusala/borealis.git

@@ -1,0 +1,14 @@
+{
+    "name": "Alien TC",
+    "iwad": "DOOM.WAD",
+    "deh": [
+        "ATCUD19.DEH"
+    ],
+    "file": [
+        "ALITCSND.WAD",
+        "ALITCWAD.WAD"
+    ],
+    "merge": [
+        "ALITCSF.WAD"
+    ]
+}

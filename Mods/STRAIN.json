@@ -1,0 +1,10 @@
+{
+    "name": "STRAIN",
+    "iwad": "DOOM2.WAD",
+    "deh": [
+        "STRAIN.DEH"
+    ],
+    "file": [
+        "STRAIN.WAD"
+    ]
+}

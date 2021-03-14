@@ -1,0 +1,10 @@
+{
+    "name": "Chex Quest",
+    "iwad": "DOOM.WAD",
+    "deh": [
+        "chex.deh"
+    ],
+    "file": [
+        "chex.wad"
+    ]
+}

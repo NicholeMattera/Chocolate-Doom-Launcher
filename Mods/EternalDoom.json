@@ -1,0 +1,7 @@
+{
+    "name": "Eternal Doom",
+    "iwad": "DOOM2.WAD",
+    "merge": [
+        "ETERNALL.WAD"
+    ]
+}
