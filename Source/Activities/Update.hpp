@@ -19,10 +19,10 @@
 
 #include <borealis.hpp>
 
-namespace ChocolateDoomLauncher {
-    class MainActivity : public brls::Activity {
+namespace ChocolateDoomLauncher::Activities {
+    class Update : public brls::Activity {
         public:
-            CONTENT_FROM_XML_RES("activity/main.xml");
+            CONTENT_FROM_XML_RES("activity/update.xml");
 
             void onContentAvailable() override;
     };

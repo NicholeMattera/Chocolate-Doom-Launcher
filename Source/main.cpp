@@ -18,7 +18,12 @@
 #include <borealis.hpp>
 #include <switch.h>
 
+#include "Activities/Main.hpp"
+#include "Activities/Error.hpp"
+#include "Services/File.hpp"
+
 using namespace brls::literals;
+using namespace ChocolateDoomLauncher;
 
 int main(int argc, char* argv[]) {
     brls::Logger::setLogLevel(brls::LogLevel::INFO);
@@ -29,6 +34,13 @@ int main(int argc, char* argv[]) {
     }
 
     brls::Application::createWindow("main/title"_i18n);
+
+    Services::File::initialSetup();
+    if (Services::File::fileExists("./doom.nro")) {
+        brls::Application::pushActivity(new Activities::Main());
+    } else {
+        brls::Application::pushActivity(new Activities::Error());
+    }
 
     while (brls::Application::mainLoop())
         ;

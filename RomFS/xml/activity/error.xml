@@ -1,0 +1,5 @@
+<brls:TabFrame
+    title="@i18n/demo/title"
+    icon="@res/icon/icon.png">
+
+</brls:TabFrame>

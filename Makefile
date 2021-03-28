@@ -39,7 +39,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	ChocolateDoomLauncher
 BUILD		:=	Build
-SOURCES		:=	Source Source/Activities
+SOURCES		:=	Source Source/Activities Source/Services
 ROMFS		:=	RomFS
 
 APP_TITLE	:=	Chocolate Doom Launcher
@@ -56,12 +56,12 @@ DEFINES		+=	-D__SWITCH__ -DVERSION=\"$(APP_VERSION)\"
 CFLAGS		:=	-g -Wall -O2 -ffunction-sections \
 				$(ARCH) $(DEFINES) $(INCLUDE)
 
-CXXFLAGS	:=	$(CFLAGS) -std=c++1z
+CXXFLAGS	:=	$(CFLAGS) -std=gnu++1z
 
 ASFLAGS		:=	-g $(ARCH)
 LDFLAGS		=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS		:=	-ljansson -lnx
+LIBS		:=	-lcurl -lz -lmbedtls -lmbedx509 -lmbedcrypto -ljansson -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
