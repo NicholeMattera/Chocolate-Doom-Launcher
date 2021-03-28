@@ -16,6 +16,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include <jansson.h>
+#include <stdio.h>
 #include <switch.h>
 
 #include "File.hpp"
@@ -104,11 +105,11 @@ namespace ChocolateDoomLauncher::Services {
 
     std::vector<char> Web::_makeRequest(std::string url, std::string path, std::function<void(double)> onProgressChanged) {
         std::vector<char> buffer;
-        std::ofstream file;
+        FILE * file;
 
         if (!path.empty()) {
-            file.open(path, std::ios::out | std::ios::binary | std::ios::trunc);
-            if (!file.is_open()) {
+            file = fopen(path.c_str(), "wb+");
+            if (file == NULL) {
                 buffer.push_back('0');
                 return buffer;
             }
@@ -118,8 +119,8 @@ namespace ChocolateDoomLauncher::Services {
         if (!curl) {
             buffer.clear();
             if (!path.empty()) {
-                file.flush();
-                file.close();
+                fflush(file);
+                fclose(file);
                 
                 File::deleteFile(path);
 
@@ -135,7 +136,6 @@ namespace ChocolateDoomLauncher::Services {
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "ChocolateDoomLauncher");
         if (!path.empty()) {
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _writeToFile);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &file);
         } else {
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, _write);
@@ -149,8 +149,8 @@ namespace ChocolateDoomLauncher::Services {
         curl_easy_cleanup(curl);
 
         if (!path.empty()) {
-            file.flush();
-            file.close();
+            fflush(file);
+            fclose(file);
 
             if (res != CURLE_OK) {
                 File::deleteFile(path);
@@ -166,18 +166,7 @@ namespace ChocolateDoomLauncher::Services {
     }
 
     size_t Web::_write(const char * in, size_t size, size_t num, std::vector<char> * buffer) {
-        size_t i = 0;
-        while (i < size * num) {
-            buffer->push_back(*in);
-            ++in;
-            i++;
-        }
-
-        return i;
-    }
-
-    size_t Web::_writeToFile(const char * in, size_t size, size_t num, std::ofstream * file) {
-        file->write(in, size * num);
+        buffer->insert(buffer->end(), in, in + size * num);
         return size * num;
     }
 
